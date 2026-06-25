@@ -20,6 +20,7 @@
 - The Excel file uses one fixed standard format for the MVP.
 - The target n8n workflow is `JARBAS - SOLUCOES - CARGA PN EXCEL (#AfhcrI8P35wY0SV7)`.
 - The reference n8n workflow is `2-CARGA_PN_EXCEL (#aeXRhoPa7qV4X55X)`.
+- Development must happen on branch `dev`; validation is promoted to `hom`; production is promoted to `main`.
 - Jarbas orchestrates; n8n executes the technical load.
 - Supabase is the operational status base for progress, logs, checklists, and history.
 - Do not write directly to SAP B1 transactional tables.

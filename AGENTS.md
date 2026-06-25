@@ -16,6 +16,7 @@ Carregar somente quando relevante:
 - `context/arquitetura.md` - arquitetura conceitual, camadas e fluxo multiagente.
 - `context/stack.md` - tecnologias previstas, integracoes e comandos conhecidos.
 - `context/estrutura-documental.md` - mapa de pastas e documentos do projeto.
+- `context/github-flow.md` - estrategia de branches GitHub: dev, hom e main.
 
 ## Workers Disponiveis
 - **Arquiteto Multiagente** (`workers/arquiteto-multiagente.md`) - analisa arquitetura, n8n, Supabase, RAG e setores.
@@ -30,6 +31,7 @@ Carregar somente quando relevante:
 5. Nao alterar codigo, configuracoes, dependencias, segredos ou arquivos operacionais quando a tarefa for de Agentic OS.
 6. Registrar decisoes importantes e proximos passos em `memory/` ao encerrar sessoes relevantes.
 7. Para consolidar mais de dois arquivos de contexto/cerebro, mapear antes e pedir aprovacao.
+8. Implementacoes devem acontecer na branch `dev`; `hom` e para homologacao, `main` e producao.
 
 ## Comandos
 | Comando | Acao |
@@ -41,5 +43,5 @@ Carregar somente quando relevante:
 ## Estado do Projeto
 - **Data da parametrizacao inicial**: 2026-06-25
 - **Ultima sessao registrada**: `memory/history/2026-06-25-parametrizacao-inicial.md`
-- **Proximo passo sugerido**: validar com o usuario quais telas/fluxos devem virar implementacao primeiro.
-
+- **Fluxo GitHub**: `dev -> hom -> main`
+- **Proximo passo sugerido**: implementar o MVP na branch `dev` e promover para `hom` quando estiver pronto para validacao.
