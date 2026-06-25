@@ -3,7 +3,9 @@ values
   ('Solucoes', 'solucoes'),
   ('Consultoria', 'consultoria'),
   ('Administrativo', 'administrativo')
-on conflict (slug) do nothing;
+on conflict (slug) do update set
+  name = excluded.name,
+  active = true;
 
 insert into public.agents (name, slug, description)
 values (
@@ -11,7 +13,10 @@ values (
   'carga-pn-excel',
   'Executa carga de Parceiro de Negocio via Excel padrao usando workflow n8n Jarbas.'
 )
-on conflict (slug) do nothing;
+on conflict (slug) do update set
+  name = excluded.name,
+  description = excluded.description,
+  active = true;
 
 insert into public.agent_permissions (agent_id, group_id, can_execute)
 select a.id, g.id, true
@@ -26,13 +31,23 @@ values
   ('Anthropic', 'anthropic', null, 'api_key', 'ANTHROPIC_API_KEY'),
   ('GLM', 'glm', null, 'api_key', 'GLM_API_KEY'),
   ('OpenAI Compatible', 'openai_compatible', 'OPENAI_COMPATIBLE_BASE_URL', 'api_key', 'OPENAI_COMPATIBLE_API_KEY')
-on conflict (slug) do nothing;
+on conflict (slug) do update set
+  name = excluded.name,
+  base_url = excluded.base_url,
+  auth_mode = excluded.auth_mode,
+  secret_ref = excluded.secret_ref,
+  enabled = true;
 
 insert into public.ai_models (provider_id, model_key, display_name, supports_text, supports_vision, supports_tools)
 select p.id, 'default-chat', 'Default Chat Model', true, false, true
 from public.ai_providers p
 where p.slug = 'openai'
-on conflict (provider_id, model_key) do nothing;
+on conflict (provider_id, model_key) do update set
+  display_name = excluded.display_name,
+  supports_text = excluded.supports_text,
+  supports_vision = excluded.supports_vision,
+  supports_tools = excluded.supports_tools,
+  enabled = true;
 
 insert into public.agent_ai_policies (
   agent_id,
