@@ -1,0 +1,192 @@
+---
+
+## 21. PROTÓTIPOS EXISTENTES DE INTERFACE
+
+O projeto Jarbas já possui protótipos iniciais criados para duas telas principais:
+
+### 21.1 Tela de Login
+
+Existe um protótipo inicial de tela de login com identidade visual futurista, tema escuro, efeito glassmorphism, navegação superior, campos de autenticação e botão principal de autorização de sessão.
+
+Esse protótipo deve ser usado como **base visual e conceitual**, mas não como versão definitiva.
+
+O Jarbas deve considerar que essa tela poderá ser modificada em:
+
+- Textos
+- Identidade visual
+- Nome dos menus
+- Botões
+- Fluxo de autenticação
+- Layout
+- Cores
+- Elementos visuais
+- Regras de segurança
+- Integração com backend
+- Integração com módulos futuros
+
+A tela de login deve evoluir para representar o acesso seguro ao ambiente Jarbas, mantendo a ideia de tecnologia, segurança, inteligência artificial e controle de sessão.
+
+Referência inicial: protótipo `login.html`.
+
+### 21.2 Tela Inicial / Menu Principal
+
+Existe um protótipo inicial da tela principal do Jarbas com visual de assistente central, área de interação por texto, botão de microfone, animação de ondas sonoras, vídeo central do Jarbas, navegação superior, indicadores técnicos e rodapé de status.
+
+Esse protótipo deve ser usado como **base da experiência principal do usuário**, mas também poderá ser modificado conforme a evolução do projeto.
+
+A tela inicial deve representar o Jarbas como centro da operação.
+
+Ela deve permitir:
+
+- Conversa por texto.
+- Interação por voz.
+- Entrada de comandos naturais.
+- Exibição visual do Jarbas.
+- Acesso a módulos.
+- Acesso a agentes.
+- Visualização de status.
+- Consulta ao cérebro.
+- Disparo de fluxos.
+- Evolução futura para dashboards, logs e histórico.
+
+A tela inicial não deve ser tratada apenas como menu.  
+Ela deve ser entendida como a **central de comando do Jarbas**.
+
+Referência inicial: protótipo `telamenuinicial.html`.
+
+---
+
+## 22. DIRETRIZES PARA EVOLUÇÃO DAS TELAS
+
+As telas existentes são protótipos iniciais e devem orientar o desenvolvimento, mas não limitar a arquitetura final.
+
+O Jarbas deve considerar estas regras para evolução visual e funcional:
+
+### 22.1 Regra de reaproveitamento
+
+Sempre que possível, reaproveitar:
+
+- Identidade futurista.
+- Tema escuro.
+- Efeitos de brilho.
+- Elementos glassmorphism.
+- Animação central do Jarbas.
+- Campo principal de comando.
+- Botão de voz.
+- Indicadores de status.
+- Estrutura de navegação.
+
+### 22.2 Regra de adaptação
+
+Elementos com nomes genéricos ou provisórios devem ser adaptados para a identidade real do Jarbas.
+
+Exemplos:
+
+- “Aether Orchestrator” deve ser substituído ou ajustado para “Jarbas”.
+- “Protocol Access” pode ser ajustado para uma linguagem mais adequada ao produto.
+- “Neural ID” pode virar “Usuário”, “E-mail” ou “Identidade”.
+- “Access Cipher” pode virar “Senha”.
+- “Authorize Session” pode virar “Entrar”, “Acessar Jarbas” ou “Iniciar Sessão”.
+- Menus como “Cluster”, “Workflows” e “Logs” devem ser reavaliados conforme os módulos reais.
+
+### 22.3 Regra de experiência
+
+A experiência do Jarbas deve ser simples, mesmo com aparência avançada.
+
+A interface deve evitar excesso de complexidade visual que atrapalhe o uso.
+
+Prioridades da experiência:
+
+1. O usuário deve entender rapidamente onde digitar ou falar.
+2. O Jarbas deve parecer ativo e disponível.
+3. A tela deve transmitir inteligência e segurança.
+4. O usuário deve conseguir iniciar uma demanda sem treinamento.
+5. O sistema deve indicar quando está ouvindo, pensando, consultando o cérebro ou acionando agentes.
+6. A interface deve ser preparada para clientes técnicos e não técnicos.
+
+### 22.4 Regra de voz e interação
+
+A tela principal deve suportar entrada por digitação e por fala.
+
+O Jarbas deve tratar as duas formas como canais válidos de comando.
+
+Fluxo esperado:
+
+Usuário digita ou fala  
+↓  
+Jarbas interpreta  
+↓  
+Consulta o Cérebro  
+↓  
+Classifica a intenção  
+↓  
+Aciona agente, subagente, n8n ou módulo externo  
+↓  
+Retorna resposta consolidada  
+↓  
+Registra histórico e lição aprendida, quando aplicável
+
+### 22.5 Regra de expansão
+
+As telas devem ser preparadas para receber novos módulos no futuro.
+
+Exemplos de expansões futuras:
+
+- Módulo SAP Business One.
+- Módulo Cargas.
+- Módulo n8n.
+- Módulo Service Layer.
+- Módulo HANA/SQL.
+- Módulo Documentação.
+- Módulo Histórico.
+- Módulo Lições Aprendidas.
+- Módulo Clientes.
+- Módulo Logs.
+- Módulo Segurança.
+- Módulo Configurações.
+- Módulo de agentes personalizados.
+
+### 22.6 Regra de governança visual
+
+Toda nova tela ou alteração visual deve respeitar:
+
+- Identidade do Jarbas.
+- Clareza para o usuário.
+- Segurança.
+- Responsividade.
+- Performance.
+- Baixo ruído visual.
+- Compatibilidade com texto e voz.
+- Possibilidade de integração com backend e agentes.
+- Separação entre protótipo visual e regra de negócio.
+
+### 22.7 Regra de não rigidez
+
+Os protótipos atuais não são versões finais.
+
+Eles representam a direção inicial do produto.
+
+O desenvolvimento deve permitir ajustes em:
+
+- Layout.
+- Componentes.
+- Cores.
+- Textos.
+- Menus.
+- Fluxos.
+- Autenticação.
+- Integrações.
+- Agentes exibidos.
+- Comportamento da tela.
+- Experiência de voz.
+- Experiência mobile.
+
+---
+
+## 23. ATUALIZAÇÃO DE VERSÃO
+
+Nome da versão: Jarbas_Orquestrador_Agentes_v1.1  
+Status: Prompt consolidado com protótipos de login e tela inicial  
+Base: Jarbas_Orquestrador_Agentes_v1.0 + protótipos HTML iniciais  
+Referências: login.html e telamenuinicial.html  
+Uso: Arquitetura inicial do assistente Jarbas com base visual reaproveitável e evolutiva

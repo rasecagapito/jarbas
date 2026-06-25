@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S.A.M. - Multi-Agent Tactical Cockpit</title>
+    <!-- Tailwind CSS para Estilização Ultra-Rápida -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome para Ícones Holográficos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts para Tipografia Futurista -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --neon-cyan: #00f0ff;
+            --neon-fuchsia: #ff007f;
+            --neon-green: #39ff14;
+            --neon-yellow: #ffdf00;
+            --active-color: var(--neon-cyan);
+            --active-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #020205;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(16, 24, 48, 0.5) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(48, 16, 48, 0.3) 0px, transparent 50%),
+                linear-gradient(rgba(18, 18, 18, 0.2) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(18, 18, 18, 0.2) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+            color: #e2e8f0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .orbitron { font-family: 'Orbitron', sans-serif; }
+        .mono { font-family: 'Share Tech Mono', monospace; }
+
+        /* Efeito de Vidro Fosco (Glassmorphism) */
+        .glass-panel {
+            background: rgba(10, 15, 30, 0.45);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+        }
+
+        .neon-border-active {
+            border-color: var(--active-color);
+            box-shadow: var(--active-shadow), inset 0 0 10px rgba(0, 240, 255, 0.1);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .neon-text {
+            color: var(--active-color);
+            text-shadow: 0 0 8px var(--active-color);
+        }
+
+        /* Animação do Scanner Holográfico */
+        @keyframes scan {
+            0% { top: -10%; }
+            50% { top: 110%; }
+            100% { top: -10%; }
+        }
+        .scanner::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(180deg, transparent, var(--active-color), transparent);
+            left: 0;
+            animation: scan 8s linear infinite;
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        /* Animação do Núcleo de Voz */
+        @keyframes pulseRing {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 0.3; }
+            100% { transform: scale(1.3); opacity: 0; }
+        }
+        .pulse-ring {
+            animation: pulseRing 3s cubic-bezier(0.215, 0.610, 0.355, 1) infinite;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.3); }
+        ::-webkit-scrollbar-thumb { background: var(--active-color); border-radius: 4px; }
+    </style>
+</head>
+<body class="flex flex-col h-screen select-none">
+
+    <!-- Top Bar -->
+    <header class="h-16 border-b border-white/5 glass-panel px-6 flex items-center justify-between z-30">
+        <div class="flex items-center space-x-3">
+            <div class="relative w-8 h-8 flex items-center justify-center">
+                <div class="absolute inset-0 rounded-full bg-cyan-500/10 border border-cyan-500 animate-spin" style="animation-duration: 10s;"></div>
+                <i class="fa-solid fa-microchip text-xs text-cyan-400"></i>
+            </div>
+            <div>
+                <h1 class="orbitron font-black text-xs tracking-widest text-white">S.A.M. PLATFORM</h1>
+                <p class="text-[9px] mono text-cyan-400 tracking-wider">SECURE AUTOMATED MULTI-AGENT</p>
+            </div>
+        </div>
+
+        <!-- Node Status Visualizers -->
+        <div class="hidden lg:flex items-center space-x-8 text-[11px] mono">
+            <div class="flex items-center space-x-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-slate-400">CORE SYSTEM:</span>
+                <span class="text-emerald-400 font-bold">ONLINE</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-link text-slate-500"></i>
+                <span class="text-slate-400">N8N WEBHOOK:</span>
+                <span id="webhookStatus" class="text-amber-400 font-bold">STANDBY (SIMULATOR)</span>
+            </div>
+        </div>
+
+        <!-- Settings Button -->
+        <button id="configToggleBtn" class="px-4 py-1.5 rounded border border-white/10 hover:border-cyan-500/50 hover:bg-cyan-500/10 transition text-xs font-semibold tracking-wider text-slate-300">
+            <i class="fa-solid fa-sliders mr-2"></i>CONFIG
+        </button>
+    </header>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex overflow-hidden relative">
+
+        <!-- Left Column: Graph Network & Specialized Agents (Sectors) -->
+        <aside class="w-80 border-r border-white/5 glass-panel p-5 flex flex-col justify-between hidden md:flex z-10 relative scanner">
+            <div>
+                <h3 class="orbitron text-xs font-bold tracking-widest text-slate-400 mb-4">SISTEMA MULTIAGENTES</h3>
+                
+                <!-- Supervisor (Core Router) Representation -->
+                <div class="p-4 rounded-xl border border-white/5 bg-slate-950/40 mb-6 flex flex-col items-center justify-center text-center">
+                    <div class="relative w-12 h-12 mb-3">
+                        <div class="absolute inset-0 rounded-full border border-cyan-500 animate-ping opacity-25"></div>
+                        <div class="absolute inset-1 rounded-full border border-cyan-500/50 animate-spin" style="animation-duration: 4s;"></div>
+                        <div class="absolute inset-2 rounded-full bg-cyan-950 flex items-center justify-center">
+                            <i class="fa-solid fa-brain text-sm text-cyan-400"></i>
+                        </div>
+                    </div>
+                    <span class="orbitron text-[10px] tracking-widest font-bold text-white">SYS_SUPERVISOR</span>
+                    <span class="text-[9px] mono text-slate-500">ORQUESTRAÇÃO CENTRAL</span>
+                </div>
+
+                <!-- Laser Path Link Visualizer -->
+                <div class="flex justify-center my-2 h-4 relative">
+                    <div id="laserLine" class="w-1 bg-gradient-to-b from-cyan-500 to-cyan-500 h-full absolute transition-all duration-500"></div>
+                </div>
+
+                <!-- Specialized Sector Buttons -->
+                <div class="space-y-3">
+                    <button onclick="selectAgent('pmo')" id="btn-pmo" class="w-full flex items-center p-3 rounded-xl border border-white/5 bg-slate-950/20 hover:bg-slate-900/40 hover:border-cyan-500/30 transition text-left group">
+                        <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mr-3 group-hover:scale-105 transition-transform">
+                            <i class="fa-solid fa-chess-knight text-xs"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <span class="orbitron text-[10px] tracking-wider font-bold text-white">SETOR_PMO</span>
+                                <span class="text-[8px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-400 font-bold">IDLE</span>
+                            </div>
+                            <p class="text-[9px] text-slate-500 tracking-tight mt-0.5">Gestão de Projetos e Métricas</p>
+                        </div>
+                    </button>
+
+                    <button onclick="selectAgent('operacional')" id="btn-operacional" class="w-full flex items-center p-3 rounded-xl border border-white/5 bg-slate-950/20 hover:bg-slate-900/40 hover:border-fuchsia-500/30 transition text-left group">
+                        <div class="w-8 h-8 rounded-lg bg-fuchsia-500/10 border border-fuchsia-500/30 flex items-center justify-center text-fuchsia-400 mr-3 group-hover:scale-105 transition-transform">
+                            <i class="fa-solid fa-gears text-xs"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <span class="orbitron text-[10px] tracking-wider font-bold text-white">SETOR_OPERACIONAL</span>
+                                <span class="text-[8px] px-1.5 py-0.5 rounded bg-fuchsia-500/10 text-fuchsia-400 font-bold">IDLE</span>
+                            </div>
+                            <p class="text-[9px] text-slate-500 tracking-tight mt-0.5">Execução de Tarefas e Rotinas</p>
+                        </div>
+                    </button>
+
+                    <button onclick="selectAgent('desenvolvimento')" id="btn-desenvolvimento" class="w-full flex items-center p-3 rounded-xl border border-white/5 bg-slate-950/20 hover:bg-slate-900/40 hover:border-emerald-500/30 transition text-left group">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mr-3 group-hover:scale-105 transition-transform">
+                            <i class="fa-solid fa-terminal text-xs"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <span class="orbitron text-[10px] tracking-wider font-bold text-white">SETOR_DEV</span>
+                                <span class="text-[8px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-bold">IDLE</span>
+                            </div>
+                            <p class="text-[9px] text-slate-500 tracking-tight mt-0.5">Código e Banco de Dados</p>
+                        </div>
+                    </button>
+
+                    <button onclick="selectAgent('consultores')" id="btn-consultores" class="w-full flex items-center p-3 rounded-xl border border-white/5 bg-slate-950/20 hover:bg-slate-900/40 hover:border-amber-500/30 transition text-left group">
+                        <div class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mr-3 group-hover:scale-105 transition-transform">
+                            <i class="fa-solid fa-circle-nodes text-xs"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <span class="orbitron text-[10px] tracking-wider font-bold text-white">SETOR_CONSULTORIA</span>
+                                <span class="text-[8px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 font-bold">IDLE</span>
+                            </div>
+                            <p class="text-[9px] text-slate-500 tracking-tight mt-0.5">Busca Semântica & Pesquisa RAG</p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Left Footer Status Info -->
+            <div class="p-3.5 rounded-lg border border-white/5 bg-black/40 mono text-[10px] leading-relaxed">
+                <div class="flex justify-between">
+                    <span class="text-slate-500">DB CONTEXT:</span>
+                    <span class="text-cyan-400">SUPABASE_PGV</span>
+                </div>
+                <div class="flex justify-between mt-1">
+                    <span class="text-slate-500">RLS SECURITY:</span>
+                    <span class="text-emerald-400">ACTIVE</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Center Column: Futuristic Chat Interface -->
+        <section class="flex-1 flex flex-col justify-between overflow-hidden relative">
+            
+            <!-- Chat Feed Panel -->
+            <div id="chatFeed" class="flex-1 overflow-y-auto p-6 space-y-4">
+                <!-- System Welcome Message -->
+                <div class="flex items-start max-w-2xl mr-auto animate-fade-in">
+                    <div class="w-8 h-8 rounded-lg bg-cyan-950 border border-cyan-500/30 flex items-center justify-center mr-3 mt-1 shrink-0">
+                        <i class="fa-solid fa-robot text-xs text-cyan-400"></i>
+                    </div>
+                    <div class="p-4 rounded-2xl rounded-tl-none border border-white/5 bg-slate-950/40 backdrop-blur-xl relative">
+                        <span class="orbitron text-[9px] font-bold text-cyan-400 tracking-wider">SYSTEM CENTRAL</span>
+                        <p class="text-sm text-slate-300 mt-1 leading-relaxed">
+                            Terminal multifuncional ativado. Solicite uma tarefa ou selecione o setor de execução no painel à esquerda. No momento estou operando no <strong class="text-white">Modo Simulação</strong>. Configure suas chaves n8n para conexão real.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Voice Processing Node Circle Ring (Absolute Center Indicator during processing) -->
+            <div id="visualizerContainer" class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-500">
+                <div class="relative w-40 h-40 flex items-center justify-center">
+                    <div class="absolute inset-0 rounded-full border-2 border-cyan-400/40 pulse-ring"></div>
+                    <div class="absolute inset-4 rounded-full border border-cyan-400/20 pulse-ring" style="animation-delay: 1s;"></div>
+                    <div class="absolute inset-8 rounded-full border border-cyan-400/10 pulse-ring" style="animation-delay: 2s;"></div>
+                    <div class="w-16 h-16 rounded-full bg-slate-950/90 border border-cyan-500 flex items-center justify-center">
+                        <i id="visualizerIcon" class="fa-solid fa-microphone-lines text-cyan-400 text-lg animate-pulse"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Form Box -->
+            <div class="p-6 border-t border-white/5 glass-panel z-10">
+                <div class="max-w-4xl mx-auto flex items-end space-x-3">
+                    <div class="flex-1 relative rounded-xl border border-white/10 bg-slate-950/80 transition-all focus-within:border-cyan-500/40 focus-within:ring-1 focus-within:ring-cyan-500/20 p-2">
+                        <textarea id="userInput" rows="1" class="w-full bg-transparent border-0 outline-none focus:ring-0 text-sm text-slate-200 placeholder-slate-500 px-3 py-1.5 resize-none overflow-hidden" placeholder="Envie uma instrução para a inteligência de comando..." oninput="autoResizeTextarea(this)"></textarea>
+                        <!-- Selected Target Badge -->
+                        <div class="flex justify-between items-center px-3 pt-1 border-t border-white/5 mt-1">
+                            <span class="text-[9px] mono text-slate-500">TARGET ROUTING_ID:</span>
+                            <span id="activeAgentBadge" class="text-[10px] orbitron font-bold text-cyan-400 tracking-wider">SETOR_PMO</span>
+                        </div>
+                    </div>
+                    <button onclick="handleSend()" id="sendBtn" class="h-12 w-12 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 flex items-center justify-center shadow-lg hover:shadow-cyan-500/20 transition-all font-black shrink-0">
+                        <i class="fa-solid fa-arrow-right text-base"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Column: System Terminal Logs -->
+        <aside class="w-80 border-l border-white/5 glass-panel p-5 hidden xl:flex flex-col z-10 relative">
+            <h3 class="orbitron text-xs font-bold tracking-widest text-slate-400 mb-4 flex items-center justify-between">
+                <span>CONSOLA COGNITIVA</span>
+                <span class="w-2 h-2 rounded-full bg-emerald-500 pulse"></span>
+            </h3>
+
+            <!-- Terminal Area -->
+            <div id="terminalBody" class="flex-1 bg-black/70 rounded-xl border border-white/5 p-4 overflow-y-auto mono text-[10px] text-emerald-400 space-y-2 select-text">
+                <div class="text-slate-500">[00:00:01] SYS INIT: Cockpit loaded successfully.</div>
+                <div class="text-slate-500">[00:00:02] NETWORK: Awaiting configuration payload...</div>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Hidden Configuration Sidebar Slider Overlay -->
+    <div id="configSidebar" class="fixed top-0 right-0 h-full w-96 glass-panel border-l border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.9)] translate-x-full transition-transform duration-500 ease-in-out z-50 p-6 flex flex-col justify-between">
+        <div>
+            <div class="flex justify-between items-center border-b border-white/5 pb-4 mb-6">
+                <h2 class="orbitron font-bold text-sm tracking-wider text-white">N8N SETTINGS</h2>
+                <button id="configCloseBtn" class="text-slate-400 hover:text-white transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Webhook POST Input -->
+                <div class="space-y-2">
+                    <label class="orbitron text-[10px] font-bold text-slate-400 block tracking-widest">N8N WEBHOOK URL (POST)</label>
+                    <div class="relative rounded-xl border border-white/10 bg-black/50 p-1 flex items-center">
+                        <input type="text" id="webhookUrlInput" class="w-full bg-transparent border-0 outline-none text-xs text-slate-200 placeholder-slate-600 px-3 py-2" placeholder="https://seu-n8n.com/webhook/endpoint">
+                    </div>
+                    <p class="text-[9px] text-slate-500">Insira a URL do Webhook do seu fluxo de execução do n8n para encaminhamento real de dados.</p>
+                </div>
+
+                <!-- Simulation Toggle -->
+                <div class="flex items-center justify-between p-4 rounded-xl border border-white/5 bg-slate-950/40">
+                    <div>
+                        <span class="orbitron text-[10px] font-bold text-white block tracking-wide">MODO SIMULAÇÃO</span>
+                        <p class="text-[9px] text-slate-500">Use este modo se não tiver o webhook n8n configurado.</p>
+                    </div>
+                    <button onclick="toggleSimulation()" id="simulationSwitch" class="px-3 py-1 rounded bg-emerald-500/20 border border-emerald-500/40 text-[9px] text-emerald-400 font-bold tracking-wider">ATIVO</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="border-t border-white/5 pt-4">
+            <button onclick="saveConfiguration()" class="w-full py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold orbitron tracking-widest shadow-lg hover:shadow-cyan-500/20 transition-all">SALVAR ALTERAÇÕES</button>
+        </div>
+    </div>
+
+    <!-- Background Slider Overlay backdrop -->
+    <div id="overlay" class="fixed inset-0 bg-black/60 hidden z-40 backdrop-blur-sm"></div>
+
+    <script>
+        // Global Systems Variables
+        let webhookUrl = '';
+        let isSimulationMode = true;
+        let activeAgent = 'pmo'; // Default selected agent
+
+        // Tactical Agent Config Options
+        const agentThemes = {
+            pmo: { color: '#00f0ff', name: 'SETOR_PMO' },
+            operacional: { color: '#ff007f', name: 'SETOR_OPERACIONAL' },
+            desenvolvimento: { color: '#39ff14', name: 'SETOR_DEV' },
+            consultores: { color: '#ffdf00', name: 'SETOR_CONSULTORIA' }
+        };
+
+        // UI Element Selectors
+        const configSidebar = document.getElementById('configSidebar');
+        const overlay = document.getElementById('overlay');
+        const configToggleBtn = document.getElementById('configToggleBtn');
+        const configCloseBtn = document.getElementById('configCloseBtn');
+        const webhookUrlInput = document.getElementById('webhookUrlInput');
+        const simulationSwitch = document.getElementById('simulationSwitch');
+        const webhookStatus = document.getElementById('webhookStatus');
+        const activeAgentBadge = document.getElementById('activeAgentBadge');
+        const laserLine = document.getElementById('laserLine');
+        const terminalBody = document.getElementById('terminalBody');
+        const chatFeed = document.getElementById('chatFeed');
+        const userInput = document.getElementById('userInput');
+        const visualizerContainer = document.getElementById('visualizerContainer');
+        const sendBtn = document.getElementById('sendBtn');
+
+        // Dynamic System Log Pushes
+        function writeToTerminal(message, type = 'sys') {
+            const time = new Date().toLocaleTimeString();
+            let colorClass = 'text-emerald-400';
+            if (type === 'err') colorClass = 'text-red-500 font-bold';
+            if (type === 'sys') colorClass = 'text-slate-400';
+            if (type === 'route') colorClass = 'text-cyan-400 font-semibold';
+            if (type === 'exec') colorClass = 'text-fuchsia-400';
+
+            const logElement = document.createElement('div');
+            logElement.className = `${colorClass} transition-opacity duration-300`;
+            logElement.innerHTML = `[${time}] ${message}`;
+            terminalBody.appendChild(logElement);
+            terminalBody.scrollTop = terminalBody.scrollHeight;
+        }
+
+        // Open Config Drawer
+        configToggleBtn.addEventListener('click', () => {
+            configSidebar.classList.remove('translate-x-full');
+            overlay.classList.remove('hidden');
+        });
+
+        // Close Config Drawer
+        function closeConfig() {
+            configSidebar.classList.add('translate-x-full');
+            overlay.classList.add('hidden');
+        }
+        configCloseBtn.addEventListener('click', closeConfig);
+        overlay.addEventListener('click', closeConfig);
+
+        // Resize input bar automatically
+        function autoResizeTextarea(element) {
+            element.style.height = 'auto';
+            element.style.height = (element.scrollHeight) + 'px';
+        }
+
+        // Toggle Simulation Mode
+        function toggleSimulation() {
+            isSimulationMode = !isSimulationMode;
+            updateSimulationUI();
+        }
+
+        function updateSimulationUI() {
+            if (isSimulationMode) {
+                simulationSwitch.innerText = 'ATIVO';
+                simulationSwitch.className = "px-3 py-1 rounded bg-emerald-500/20 border border-emerald-500/40 text-[9px] text-emerald-400 font-bold tracking-wider";
+                webhookStatus.innerText = 'STANDBY (SIMULATOR)';
+                webhookStatus.className = 'text-amber-400 font-bold';
+                writeToTerminal('SYS: Simulação de roteamento reativada.');
+            } else {
+                if (!webhookUrl) {
+                    alert('Por favor, defina a URL do seu webhook n8n antes de desativar o modo de simulação!');
+                    isSimulationMode = true;
+                    return;
+                }
+                simulationSwitch.innerText = 'INATIVO';
+                simulationSwitch.className = "px-3 py-1 rounded bg-red-500/20 border border-red-500/40 text-[9px] text-red-500 font-bold tracking-wider";
+                webhookStatus.innerText = 'ONLINE (N8N DIRECT)';
+                webhookStatus.className = 'text-emerald-400 font-bold';
+                writeToTerminal('SYS: Conexão direta estabelecida com servidor n8n.');
+            }
+        }
+
+        // Save URL Settings
+        function saveConfiguration() {
+            webhookUrl = webhookUrlInput.value.trim();
+            localStorage.setItem('sam_webhook_url', webhookUrl);
+            localStorage.setItem('sam_simulation_mode', isSimulationMode);
+            writeToTerminal(`CONFIG: Configurações salvas. Webhook setado.`);
+            closeConfig();
+            updateSimulationUI();
+        }
+
+        // Sector Select Trigger
+        function selectAgent(agentKey) {
+            activeAgent = agentKey;
+            const theme = agentThemes[agentKey];
+            
+            // Set dynamic theme accent styles
+            document.documentElement.style.setProperty('--active-color', theme.color);
+            document.documentElement.style.setProperty('--active-shadow', `0 0 20px ${theme.color}66`);
+            activeAgentBadge.innerText = theme.name;
+            activeAgentBadge.style.color = theme.color;
+
+            // Animate dynamic sector laser graph line
+            const parentPosition = document.getElementById(`btn-${agentKey}`).getBoundingClientRect();
+            laserLine.style.backgroundColor = theme.color;
+            laserLine.style.boxShadow = `0 0 10px ${theme.color}`;
+
+            // Reset borders and glow of the active selector
+            document.querySelectorAll('button[id^="btn-"]').forEach(btn => {
+                btn.className = btn.className.replace(' neon-border-active', '');
+            });
+            document.getElementById(`btn-${agentKey}`).className += ' neon-border-active';
+
+            writeToTerminal(`ROUTER: Setor de execução chaveado para -> ${theme.name}`, 'route');
+        }
+
+        // Load Persistent Browser Variables
+        function loadSettings() {
+            const storedUrl = localStorage.getItem('sam_webhook_url');
+            if (storedUrl) {
+                webhookUrl = storedUrl;
+                webhookUrlInput.value = storedUrl;
+                isSimulationMode = false;
+            }
+            updateSimulationUI();
+            selectAgent('pmo'); // Initialize Default Theme
+        }
+
+        // UI Loading Overlay
+        function setUILoading(isLoading) {
+            if (isLoading) {
+                visualizerContainer.classList.remove('opacity-0');
+                sendBtn.disabled = true;
+                sendBtn.classList.add('opacity-50');
+                userInput.disabled = true;
+            } else {
+                visualizerContainer.classList.add('opacity-0');
+                sendBtn.disabled = false;
+                sendBtn.classList.remove('opacity-50');
+                userInput.disabled = false;
+                userInput.focus();
+            }
+        }
+
+        // HTML Response Engine Rendering
+        function appendMessage(sender, text, isUser = false) {
+            const messageWrapper = document.createElement('div');
+            messageWrapper.className = `flex items-start max-w-2xl ${isUser ? 'ml-auto flex-row-reverse' : 'mr-auto'} animate-fade-in`;
+            
+            const avatarColor = isUser ? 'bg-fuchsia-950 border-fuchsia-500/30' : 'bg-slate-950 border-white/10';
+            const iconClass = isUser ? 'fa-user text-fuchsia-400' : 'fa-robot text-cyan-400';
+            
+            // Render specific badges for the executing sectors
+            let badge = `<span class="orbitron text-[9px] font-bold text-cyan-400 tracking-wider">SYSTEM CENTRAL</span>`;
+            if (!isUser) {
+                const theme = agentThemes[activeAgent];
+                badge = `<span class="orbitron text-[9px] font-bold tracking-wider" style="color: ${theme.color}">${theme.name}</span>`;
+            } else {
+                badge = `<span class="orbitron text-[9px] font-bold text-fuchsia-400 tracking-wider">COGNITIVE USER</span>`;
+            }
+
+            messageWrapper.innerHTML = `
+                <div class="w-8 h-8 rounded-lg ${avatarColor} border flex items-center justify-center ${isUser ? 'ml-3' : 'mr-3'} mt-1 shrink-0">
+                    <i class="fa-solid ${iconClass} text-xs"></i>
+                </div>
+                <div class="p-4 rounded-2xl ${isUser ? 'rounded-tr-none border-fuchsia-500/20 bg-fuchsia-950/20' : 'rounded-tl-none border-white/5 bg-slate-950/40'} border backdrop-blur-xl">
+                    ${badge}
+                    <p class="text-sm text-slate-300 mt-1 leading-relaxed whitespace-pre-wrap">${text}</p>
+                </div>
+            `;
+            chatFeed.appendChild(messageWrapper);
+            chatFeed.scrollTop = chatFeed.scrollHeight;
+        }
+
+        // Dynamic System Simulation Responses (Generator Mockup)
+        function simulateAIResponse(message) {
+            writeToTerminal(`SYS_SUPERVISOR: Executando lógica cognitiva do prompt...`);
+            
+            setTimeout(() => {
+                writeToTerminal(`SYS_SUPERVISOR: Intenção detectada -> Despachando para o agente ${activeAgent.toUpperCase()}`, 'route');
+                
+                setTimeout(() => {
+                    writeToTerminal(`${activeAgent.toUpperCase()}_AGENT: Iniciando sub-fluxo operacional...`, 'exec');
+                    
+                    setTimeout(() => {
+                        let responseText = "";
+                        if (activeAgent === 'pmo') {
+                            responseText = `Relatório Técnico Consolidado para o projeto:\n"${message}"\n\n[✓] Cronograma Estruturado\n[✓] Orçamento Validado no Supabase\n[✓] 04 Subagentes em Standby no n8n.`;
+                        } else if (activeAgent === 'operacional') {
+                            responseText = `Operação disparada com sucesso! Disparei as seguintes ações:\n- Agendamento inserido no calendário corporativo.\n- Notificações de alerta enviadas via API ao Slack da Equipe.`;
+                        } else if (activeAgent === 'desenvolvimento') {
+                            responseText = `Query de automação de banco de dados executada com sucesso!\n\nSELECT * FROM config.agents WHERE active = true;\n\nInstância atualizada e conectada sem falhas ou injeção de SQL.`;
+                        } else {
+                            responseText = `Busca semântica (RAG) concluída no Supabase (pgvector):\n- Similaridade de Contexto: 94.6%\n- Fragmentos recuperados e sintetizados pelo GPT-4o-mini com sucesso.`;
+                        }
+                        
+                        setUILoading(false);
+                        appendMessage(activeAgent, responseText);
+                        writeToTerminal(`ROUTER: Resposta recebida do sub-workflow com sucesso. Transição concluída.`, 'sys');
+                    }, 1500);
+                }, 1000);
+            }, 800);
+        }
+
+        // Send Handler Logic
+        async function handleSend() {
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            // Clear Input
+            userInput.value = '';
+            userInput.style.height = 'auto';
+
+            // Push User Message
+            appendMessage('user', text, true);
+            setUILoading(true);
+
+            writeToTerminal(`SUPERVISOR: Recebido payload text: "${text.substring(0, 25)}..."`);
+
+            if (isSimulationMode) {
+                simulateAIResponse(text);
+                return;
+            }
+
+            // Real HTTP Webhook execution directly into your n8n workflows!
+            try {
+                writeToTerminal(`NETWORK: POSTing para -> ${webhookUrl}`);
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: text,
+                        agent_type: activeAgent
+                    })
+                });
+
+                if (!response.ok) throw new Error(`Server returned status: ${response.status}`);
+                
+                const data = await response.json();
+                writeToTerminal(`NETWORK: Conexão concluída. Processando resposta...`);
+
+                // Support both plain text or structured n8n template json replies
+                let replyText = '';
+                if (data.response) {
+                    replyText = data.response;
+                } else if (data.output) {
+                    replyText = data.output;
+                } else if (typeof data === 'string') {
+                    replyText = data;
+                } else {
+                    replyText = JSON.stringify(data, null, 2);
+                }
+
+                setUILoading(false);
+                appendMessage(activeAgent, replyText);
+
+            } catch (error) {
+                setUILoading(false);
+                writeToTerminal(`NETWORK_ERROR: ${error.message}`, 'err');
+                appendMessage('system', `Erro ao estabelecer conexão de rede com o n8n. Por favor, verifique as suas configurações de API ou reative o Modo Simulação.\n\nDetalhes Técnicos: ${error.message}`);
+            }
+        }
+
+        // Bind Enter to submit form
+        userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSend();
+            }
+        });
+
+        // Initialize Systems Setup
+        window.onload = () => {
+            loadSettings();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+{
+  "version": "1.0",
+  "project": "Jarbas / S.A.M.",
+  "platform": "Codex",
+  "gates": {
+    "documentation_consolidation": [
+      "brain/context files mapped",
+      "user approval received before consolidation",
+      "no application code changed"
+    ],
+    "critical_action": [
+      "risk explained",
+      "explicit human approval received"
+    ],
+    "codex_session_start": [
+      "AGENTS.md read",
+      "latest memory/history checked when resuming",
+      "relevant context module loaded"
+    ]
+  },
+  "schemas_output": {
+    "worker": [
+      "summary",
+      "findings",
+      "requires_user_approval"
+    ]
+  }
+}
+
