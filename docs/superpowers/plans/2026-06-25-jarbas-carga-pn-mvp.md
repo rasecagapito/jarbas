@@ -8,6 +8,15 @@
 
 **Tech Stack:** Next.js App Router, TypeScript, Tailwind CSS, Supabase Auth/Database/Storage, Vercel AI SDK-style provider abstraction, Vitest, React Testing Library, n8n MCP/Workflow SDK, SAP B1 Service Layer through n8n.
 
+## Next Access Priority
+
+When work resumes on 2026-06-26, start from **Task 3: Supabase Clients, Auth Middleware, and Login Page**.
+
+Before promoting anything to `hom`, check `docs/checklists/implantacao-jarbas-mvp.md`, especially the Supabase migration note:
+
+- If `supabase/migrations/202606250001_jarbas_mvp.sql` has not been applied to a real Supabase environment yet, apply the current file.
+- If an older version of that migration was already applied, create an incremental migration for the Task 2 review fixes instead of relying on edits to the original migration file.
+
 ## Global Constraints
 
 - The MVP uses real login through Supabase Auth with e-mail and password.
@@ -2319,6 +2328,13 @@ N8N_JARBAS_CALLBACK_SECRET=
 7. Confirm final summary is visible.
 8. Confirm logs and checklist are stored.
 ```
+
+Priority implantation checks before `hom`:
+
+- Confirm whether `supabase/migrations/202606250001_jarbas_mvp.sql` was already applied in a real Supabase environment.
+- If the earlier version was already applied, create a new incremental migration with the Task 2 review fixes: `validate_jarbas_execution_access`, trigger, RLS policies, and convergent seed changes.
+- Install or make available `supabase` CLI or `psql` for SQL validation before homologation.
+- Restrict user-side updates to execution progress/status before Tasks 5/7/8 if operational writes move to backend/service role/n8n.
 
 - [ ] **Step 2: Update AGENTS project state**
 
