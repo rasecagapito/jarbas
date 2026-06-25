@@ -42,7 +42,7 @@ Carregar somente quando relevante:
 
 ## Estado do Projeto
 - **Data da parametrizacao inicial**: 2026-06-25
-- **Ultima sessao registrada**: `memory/history/2026-06-25-checkpoint-retomada-jarbas-mvp.md`
+- **Ultima sessao registrada**: `memory/history/2026-06-25-20-32-session.md`
 - **Fluxo GitHub**: `dev -> hom -> main`
 - **Status MVP**: Tasks 1 e 2 concluidas em `dev`; Task 3 e a proxima prioridade.
 - **Proximo passo sugerido**: em 2026-06-26, retomar pela Task 3 do plano Jarbas Carga PN MVP: Supabase clients, middleware de auth e login real.
