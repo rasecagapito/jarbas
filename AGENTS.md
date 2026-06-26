@@ -32,6 +32,7 @@ Carregar somente quando relevante:
 6. Registrar decisoes importantes e proximos passos em `memory/` ao encerrar sessoes relevantes.
 7. Para consolidar mais de dois arquivos de contexto/cerebro, mapear antes e pedir aprovacao.
 8. Implementacoes devem acontecer na branch `dev`; `hom` e para homologacao, `main` e producao.
+9. Tratar `env/` e arquivos `.env*` como segredos locais: nao versionar, nao imprimir valores e nao expor em commits ou logs.
 
 ## Comandos
 | Comando | Acao |

@@ -1,7 +1,12 @@
 node_modules
 .next
 .env
-.env.local
+.env.*
+!.env.example
+env/
 .superpowers
 coverage
 tsconfig.tsbuildinfo
+
+.vercel
+.env*.local
