@@ -17,10 +17,10 @@
   - ajustes de seed convergente.
 - [ ] Validar SQL com `supabase` CLI ou `psql` antes de promover para `hom`.
 - [x] Aplicar `supabase/seed/202606250001_jarbas_mvp_seed.sql`.
-- [ ] Criar bucket `jarbas-uploads`.
-- [ ] Criar usuario real de teste com e-mail/senha.
-- [ ] Criar `profiles` para o usuario.
-- [ ] Vincular usuario ao grupo `solucoes`.
+- [x] Criar bucket `jarbas-uploads`.
+- [x] Criar usuario real de teste com e-mail/senha.
+- [x] Criar `profiles` para o usuario.
+- [x] Vincular usuario ao grupo `solucoes`.
 
 ## Auth e Login Real
 
@@ -34,7 +34,7 @@
 ## Promocao GitHub
 
 - [x] Desenvolvimento continua em `dev`.
-- [ ] Promover `dev -> hom` somente depois de testes locais e checklist Supabase.
+- [x] Promover `dev -> hom` somente depois de testes locais e checklist Supabase.
 - [ ] Se `hom` reprovar, corrigir em `dev` e promover novamente.
 - [ ] Promover `hom/main` somente apos validacao funcional.
 
@@ -43,6 +43,6 @@
 - [x] `npm test`
 - [x] `npm run lint`
 - [x] `npm run build`
-- [ ] Login real validado.
-- [ ] Usuario de teste enxerga apenas agentes do grupo permitido.
-- [ ] Nenhum segredo exposto no frontend.
+- [x] Login real validado.
+- [x] Usuario de teste enxerga apenas agentes do grupo permitido.
+- [x] Nenhum segredo exposto no frontend.
