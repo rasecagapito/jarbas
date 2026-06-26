@@ -1,0 +1,263 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>AETHER ORCHESTRATOR | Sovereign AI Control</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Sora:wght@600;700;800&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Fixed, non-scrolling experience */
+            background-color: #0c1324;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .glass-panel {
+            background: rgba(12, 19, 36, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .luminous-border {
+            border: 1px solid transparent;
+            background-image: linear-gradient(#0c1324, #0c1324), linear-gradient(to bottom right, #00dbe9, transparent);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+        }
+
+        .cyan-glow {
+            box-shadow: 0 0 40px rgba(0, 219, 233, 0.15), inset 0 0 20px rgba(0, 219, 233, 0.1);
+        }
+
+        .soundwave-bar {
+            animation: soundwave 1.2s ease-in-out infinite;
+        }
+
+        @keyframes soundwave {
+            0%, 100% { height: 4px; opacity: 0.3; }
+            50% { height: 16px; opacity: 1; }
+        }
+
+        .pulse-ring {
+            animation: ring-pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes ring-pulse {
+            0% { transform: scale(0.95); opacity: 0.5; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(0.95); opacity: 0.5; }
+        }
+
+        .mesh-gradient {
+            background: radial-gradient(circle at 0% 0%, rgba(0, 219, 233, 0.05) 0%, transparent 50%),
+                        radial-gradient(circle at 100% 100%, rgba(109, 59, 215, 0.05) 0%, transparent 50%);
+        }
+
+        .circuit-bg {
+            background-image: radial-gradient(#ffffff05 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#93000a",
+                        "outline-variant": "#3b494b",
+                        "secondary": "#bbc3ff",
+                        "on-background": "#dce1fb",
+                        "surface-container-high": "#23293c",
+                        "tertiary-fixed": "#e9ddff",
+                        "surface-container": "#191f31",
+                        "on-error": "#690005",
+                        "on-primary": "#00363a",
+                        "on-tertiary": "#3c0091",
+                        "secondary-fixed-dim": "#bbc3ff",
+                        "surface-dim": "#0c1324",
+                        "secondary-container": "#0231de",
+                        "surface-container-low": "#151b2d",
+                        "on-secondary": "#001d93",
+                        "error": "#ffb4ab",
+                        "primary-fixed-dim": "#00dbe9",
+                        "on-tertiary-container": "#6d3bd7",
+                        "surface-bright": "#33394c",
+                        "tertiary": "#faf3ff",
+                        "on-tertiary-fixed-variant": "#5516be",
+                        "surface": "#0c1324",
+                        "inverse-primary": "#006970",
+                        "on-secondary-container": "#b1bbff",
+                        "on-secondary-fixed-variant": "#002ccd",
+                        "on-surface-variant": "#b9cacb",
+                        "on-tertiary-fixed": "#23005c",
+                        "on-secondary-fixed": "#000f5d",
+                        "tertiary-fixed-dim": "#d0bcff",
+                        "surface-tint": "#00dbe9",
+                        "surface-container-highest": "#2e3447",
+                        "surface-variant": "#2e3447",
+                        "outline": "#849495",
+                        "inverse-surface": "#dce1fb",
+                        "secondary-fixed": "#dee0ff",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-lowest": "#070d1f",
+                        "primary-container": "#00f0ff",
+                        "primary": "#dbfcff",
+                        "primary-fixed": "#7df4ff",
+                        "on-primary-fixed": "#002022",
+                        "on-primary-container": "#006970",
+                        "on-primary-fixed-variant": "#004f54",
+                        "on-surface": "#dce1fb",
+                        "background": "#0c1324",
+                        "tertiary-container": "#e1d2ff",
+                        "inverse-on-surface": "#2a3043"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "gutter": "24px",
+                        "section-gap": "64px",
+                        "margin-desktop": "40px",
+                        "stack-gap": "12px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "display-lg-mobile": ["Sora"],
+                        "code-sm": ["JetBrains Mono"],
+                        "label-xs": ["JetBrains Mono"],
+                        "headline-md": ["Sora"],
+                        "body-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "display-lg": ["Sora"]
+                    },
+                    "fontSize": {
+                        "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "code-sm": ["13px", {"lineHeight": "18px", "fontWeight": "500"}],
+                        "label-xs": ["11px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface h-screen w-screen relative overflow-hidden flex flex-col items-center justify-center">
+<!-- Background Image Replacement -->
+<img alt="High-tech interface background" class="fixed inset-0 z-0 w-screen h-screen object-cover opacity-60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEN4CZmPA8pWGAVKXTeAX6KkHQw1kmJGZBmVDuplWEs5le74lQcupGw-b8cGlVK3Ors74g4HRzX4xMhlId9YxLJfR5kG-TPhdn4ZAWeDmybppSyloWuiB8YRyZJqqglKs1iPgTnZcNbvQhZam8-76QLgnKcZx113xwe9zn3sWvhVBKux9DHDz6uZxe5opOQnQayuc94HYBoetW2P5jIZc6UZ239C9oLZqmwAIgN8eysFt4tayNXcCqv1_BL4Pgcg0ixHMnUtqJapf-">
+<!-- Ambient Overlays -->
+<div class="fixed top-0 left-0 w-[500px] h-[500px] bg-primary-container/5 rounded-full blur-[120px]"></div>
+<div class="fixed bottom-0 right-0 w-[500px] h-[500px] bg-tertiary-container/5 rounded-full blur-[120px]"></div>
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/40 backdrop-blur-xl border-b border-white/10 shadow-[0_0_20px_rgba(0,219,233,0.15)] flex justify-between items-center px-margin-desktop py-4 max-w-full">
+<div class="font-display-lg text-[24px] lg:text-[32px] tracking-tighter text-primary">
+            AETHER ORCHESTRATOR
+        </div>
+<nav class="hidden md:flex gap-8">
+<a class="text-primary border-b-2 border-primary pb-1 font-body-sm text-body-sm transition-all" href="#">Cluster</a>
+<a class="text-on-surface-variant font-body-sm text-body-sm hover:text-primary-container transition-colors duration-300" href="#">Workflows</a>
+<a class="text-on-surface-variant font-body-sm text-body-sm hover:text-primary-container transition-colors duration-300" href="#">Logs</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary hover:text-primary-container transition-colors p-2 rounded-full hover:bg-white/5">memory</button>
+<button class="material-symbols-outlined text-primary hover:text-primary-container transition-colors p-2 rounded-full hover:bg-white/5">settings</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-primary/20">
+<img alt="AI architect profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDe79vvRYcd_LgaduYUDqDVVSKexINA6pzf5IWknpahihX-WEkPRO8Vn2JvmWFsWa4u58ZzUVE3tUSgpejKI-BM438mkgMVUORTER7t0Uyrb4mMHfdkPr3md0ie0LDWQhzMNE3JfxmlSrc8kWie4epcE7RlZZFiqZ3J58oGS3gLFSDKTsfas5rhTs0BQn3HDw2HPPs7mmmfDCplZbpDQEmpQzN2pneKVUF_8XoakH7nbMupUCtbu9tqvnsakkE6oX6bbVcbdMk4pWqA">
+</div>
+</div>
+</header>
+<!-- Main Orchestrator Canvas -->
+<main class="relative z-10 flex flex-col items-center justify-center w-full max-w-7xl px-4 pt-16">
+<!-- Central Tech Frame (Jarbas Core) -->
+<div class="relative w-[320px] h-[320px] md:w-[460px] md:h-[460px] flex items-center justify-center mb-8">
+<!-- Animated Decorative Rings -->
+<div class="absolute inset-0 rounded-full border border-primary/10 pulse-ring"></div>
+<div class="absolute inset-4 rounded-full border border-primary/20"></div>
+<div class="absolute inset-8 rounded-full overflow-hidden">
+<video autoplay="" class="w-full h-full object-cover" loop="" muted="" playsinline="">
+<source src="https://res.cloudinary.com/dswwqkues/video/upload/v1782399147/jarbas_sem_fundo_transparente_anmayy.webm" type="video/webm">
+</video>
+</div>
+<!-- Digital Accents (Corner Brackets) -->
+<div class="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-primary/40 rounded-tl-xl"></div>
+<div class="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-primary/40 rounded-tr-xl"></div>
+<div class="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-primary/40 rounded-bl-xl"></div>
+<div class="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-primary/40 rounded-br-xl"></div>
+</div>
+<!-- Interaction Area -->
+<div class="w-full max-w-xl space-y-8 flex flex-col items-center">
+<!-- Chat Input (Glassmorphic) -->
+<div class="w-full relative group">
+<div class="absolute -inset-1 bg-gradient-to-r from-primary/20 to-tertiary/20 rounded-full blur opacity-25 group-focus-within:opacity-75 transition duration-1000"></div>
+<div class="relative flex items-center bg-surface-container-low/80 backdrop-blur-xl border border-white/10 rounded-full px-6 py-4 shadow-2xl">
+<input class="bg-transparent border-none focus:ring-0 w-full text-on-surface placeholder:text-outline-variant font-body-md text-body-md" placeholder="Initialize agentic sequence..." type="text">
+<button class="ml-4 flex items-center justify-center bg-primary text-on-primary-fixed p-2 rounded-full transition-transform active:scale-95 duration-150">
+<span class="material-symbols-outlined">send</span>
+</button>
+</div>
+</div>
+<!-- Voice Sensor -->
+<div class="flex flex-col items-center gap-4">
+<div class="flex items-end gap-1 h-8">
+<div class="soundwave-bar w-1 bg-primary rounded-full" style="animation-delay: 0.1s"></div>
+<div class="soundwave-bar w-1 bg-primary-container rounded-full" style="animation-delay: 0.3s"></div>
+<div class="soundwave-bar w-1 bg-primary rounded-full" style="animation-delay: 0.2s"></div>
+<div class="soundwave-bar w-1 bg-secondary rounded-full" style="animation-delay: 0.4s"></div>
+<div class="soundwave-bar w-1 bg-primary rounded-full" style="animation-delay: 0.15s"></div>
+<div class="soundwave-bar w-1 bg-primary-container rounded-full" style="animation-delay: 0.35s"></div>
+<div class="soundwave-bar w-1 bg-primary rounded-full" style="animation-delay: 0.25s"></div>
+</div>
+<div class="relative flex items-center justify-center">
+<div class="absolute w-12 h-12 rounded-full bg-primary/20 animate-ping"></div>
+<button class="relative z-10 w-14 h-14 rounded-full bg-surface-container-high border border-primary/30 flex items-center justify-center text-primary hover:bg-primary/10 transition-colors shadow-lg group">
+<span class="material-symbols-outlined text-[32px] group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 1;">mic</span>
+</button>
+</div>
+<p class="font-label-xs text-label-xs text-outline tracking-widest uppercase">Monitoring Sonic Input</p>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="fixed bottom-0 w-full z-50 bg-surface-container-lowest/60 backdrop-blur-md border-t border-white/5 flex justify-between items-center px-margin-desktop py-2">
+<div class="flex gap-6 items-center">
+<span class="font-code-sm text-code-sm text-primary">AETHER NEURAL SYSTEMS</span>
+<div class="flex gap-4">
+<span class="font-label-xs text-label-xs text-outline-variant">System Health: <span class="text-primary font-bold">99.9%</span></span>
+<span class="font-label-xs text-label-xs text-outline-variant">Latency: <span class="text-secondary font-bold">24ms</span></span>
+</div>
+</div>
+<div class="flex gap-8">
+<a class="font-label-xs text-label-xs text-outline-variant hover:text-secondary transition-opacity" href="#">API Docs</a>
+<a class="font-label-xs text-label-xs text-outline-variant hover:text-secondary transition-opacity" href="#">Privacy</a>
+<span class="font-label-xs text-label-xs text-outline-variant">© 2024 ALL RIGHTS RESERVED.</span>
+</div>
+</footer>
+<script>
+        // Simple micro-interaction for the input field
+        const input = document.querySelector('input');
+        const waveBars = document.querySelectorAll('.soundwave-bar');
+
+        input.addEventListener('focus', () => {
+            waveBars.forEach(bar => {
+                bar.style.animationDuration = '0.6s';
+            });
+        });
+
+        input.addEventListener('blur', () => {
+            waveBars.forEach(bar => {
+                bar.style.animationDuration = '1.2s';
+            });
+        });
+    </script>
+
+
+</body></html>
