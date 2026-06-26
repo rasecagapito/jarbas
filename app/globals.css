@@ -7,6 +7,131 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: #070d1f;
+  background: #030712;
   color: #dce1fb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: rgba(0, 219, 233, 0.3);
+  color: #dbfcff;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #070d1f;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #00dbe9;
+}
+
+.jarbas-circuit {
+  background:
+    linear-gradient(90deg, rgba(0, 219, 233, 0.05) 1px, transparent 1px),
+    linear-gradient(rgba(0, 219, 233, 0.05) 1px, transparent 1px),
+    linear-gradient(135deg, #030712 0%, #070d1f 44%, #0c1324 100%);
+  background-size: 42px 42px, 42px 42px, 100% 100%;
+}
+
+.jarbas-scanline {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(0, 219, 233, 0.08) 50%,
+    transparent 100%
+  );
+  animation: jarbas-scan 7s linear infinite;
+}
+
+.jarbas-glass {
+  background: rgba(12, 19, 36, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(22px);
+}
+
+.jarbas-luminous-panel {
+  background:
+    linear-gradient(#0c1324, #0c1324) padding-box,
+    linear-gradient(135deg, rgba(0, 219, 233, 0.72), transparent 42%, rgba(187, 195, 255, 0.24)) border-box;
+  border: 1px solid transparent;
+  box-shadow:
+    0 0 38px rgba(0, 219, 233, 0.12),
+    inset 0 0 28px rgba(0, 219, 233, 0.06);
+}
+
+.jarbas-float {
+  animation: jarbas-float 6s ease-in-out infinite;
+}
+
+.jarbas-ring {
+  animation: jarbas-ring 3.8s ease-in-out infinite;
+}
+
+.jarbas-ring-slow {
+  animation: jarbas-ring 5.8s ease-in-out infinite;
+}
+
+.jarbas-soundwave {
+  animation: jarbas-soundwave 1.2s ease-in-out infinite;
+}
+
+.jarbas-core-shadow {
+  filter: drop-shadow(0 0 24px rgba(0, 219, 233, 0.35));
+}
+
+@keyframes jarbas-scan {
+  from {
+    transform: translateY(-100%);
+  }
+
+  to {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes jarbas-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-16px);
+  }
+}
+
+@keyframes jarbas-ring {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.96);
+  }
+
+  50% {
+    opacity: 0.9;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes jarbas-soundwave {
+  0%,
+  100% {
+    height: 5px;
+    opacity: 0.35;
+  }
+
+  50% {
+    height: 20px;
+    opacity: 1;
+  }
 }

@@ -12,6 +12,9 @@ import { FileUpload } from "@/components/jarbas/file-upload";
 import { VoiceControls } from "@/components/jarbas/voice-controls";
 import { getGreeting, speak } from "@/lib/voice";
 
+const JARBAS_CORE_VIDEO =
+  "https://res.cloudinary.com/dswwqkues/video/upload/v1782399147/jarbas_sem_fundo_transparente_anmayy.webm";
+
 export function JarbasShell({
   displayName,
   signOutAction,
@@ -48,60 +51,122 @@ export function JarbasShell({
     return () => window.clearInterval(timer);
   }, [executionId]);
 
+  const visibleMessages = messages.slice(-3);
+
   return (
-    <main className="min-h-screen bg-jarbas-bg text-jarbas-text">
-      <div className="mx-auto grid min-h-screen max-w-7xl grid-cols-1 gap-6 px-6 py-6 lg:grid-cols-[280px_1fr]">
+    <main className="jarbas-circuit relative min-h-screen overflow-x-hidden text-jarbas-text">
+      <div className="pointer-events-none absolute inset-0 opacity-80">
+        <div className="jarbas-scanline absolute inset-x-0 top-0 h-1/2" />
+        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-jarbas-cyan/10 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black/50 to-transparent" />
+      </div>
+
+      <header className="fixed inset-x-0 top-0 z-30 border-b border-white/10 bg-jarbas-surface/55 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-[1500px] items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+          <div className="min-w-0">
+            <p className="font-display text-xl font-semibold text-jarbas-blue sm:text-2xl">
+              Jarbas / S.A.M.
+            </p>
+            <p className="mt-1 font-mono text-xs uppercase tracking-[0.16em] text-jarbas-muted">
+              Secure Automated Multi-Agent Platform
+            </p>
+          </div>
+
+          <nav className="hidden items-center gap-6 font-mono text-xs uppercase tracking-[0.16em] text-jarbas-muted md:flex">
+            <span className="text-jarbas-cyan">Cluster</span>
+            <span>Workflows</span>
+            <span>Logs</span>
+          </nav>
+
+          <form action={signOutAction}>
+            <button
+              className="rounded-lg border border-jarbas-cyan/50 px-4 py-2 text-sm font-semibold text-jarbas-cyan transition hover:bg-jarbas-cyan/10 active:scale-[0.98]"
+              type="submit"
+            >
+              Sair
+            </button>
+          </form>
+        </div>
+      </header>
+
+      <div className="relative z-10 mx-auto grid min-h-screen max-w-[1500px] grid-cols-1 gap-4 px-4 pb-5 pt-24 sm:px-6 lg:grid-cols-[280px_minmax(0,1fr)_330px] lg:px-8">
         <AgentPanel />
 
-        <section className="flex min-h-[calc(100vh-3rem)] flex-col border border-white/10 bg-jarbas-surface/70 p-6">
-          <header className="flex flex-wrap items-start justify-between gap-4 border-b border-white/10 pb-5">
-            <div>
+        <section className="flex min-h-[640px] flex-col items-center justify-between overflow-hidden rounded-lg border border-white/10 bg-jarbas-surface/35 p-4 backdrop-blur-md sm:p-6 lg:min-h-[calc(100vh-7.25rem)]">
+          <div className="flex w-full items-start justify-between gap-4">
+            <div className="min-w-0">
               <p className="font-mono text-xs uppercase tracking-[0.18em] text-jarbas-cyan">
                 Jarbas MVP
               </p>
-              <h1 className="mt-2 font-display text-3xl font-semibold text-jarbas-blue">
+              <h1 className="mt-2 font-display text-2xl font-semibold text-jarbas-blue sm:text-3xl">
                 Cockpit Carga PN Excel
               </h1>
             </div>
-
-            <form action={signOutAction}>
-              <button
-                className="border border-jarbas-cyan px-4 py-2 text-sm font-semibold text-jarbas-cyan"
-                type="submit"
-              >
-                Sair
-              </button>
-            </form>
-          </header>
-
-          <div className="flex-1 space-y-4 py-5">
-            {messages.map((message, index) => (
-              <div
-                key={`${index}-${message}`}
-                className="border border-white/10 bg-jarbas-panel p-4 leading-7"
-              >
-                {message}
-              </div>
-            ))}
-
-            <FileUpload onExecutionStarted={setExecutionId} />
-            <ExecutionProgress execution={execution} logs={logs} />
+            <div className="hidden rounded border border-white/10 px-3 py-2 font-mono text-xs uppercase tracking-[0.14em] text-jarbas-muted sm:block">
+              Health <span className="text-jarbas-cyan">99.9%</span>
+            </div>
           </div>
 
-          <div className="flex flex-col gap-3 border-t border-white/10 pt-5 sm:flex-row">
-            <ChatComposer
-              onSend={(message) =>
-                setMessages((current) => [...current, message])
-              }
-            />
-            <VoiceControls
-              onTranscript={(message) =>
-                setMessages((current) => [...current, message])
-              }
-            />
+          <div className="relative flex w-full flex-1 flex-col items-center justify-center py-5">
+            <JarbasCore />
+
+            <div className="w-full max-w-3xl">
+              <div className="mb-4 min-h-20 space-y-3">
+                {visibleMessages.map((message, index) => (
+                  <div
+                    key={`${index}-${message}`}
+                    className="jarbas-glass rounded-lg px-4 py-3 text-sm leading-6 text-jarbas-text"
+                  >
+                    {message}
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <ChatComposer
+                  onSend={(message) =>
+                    setMessages((current) => [...current, message])
+                  }
+                />
+                <VoiceControls
+                  onTranscript={(message) =>
+                    setMessages((current) => [...current, message])
+                  }
+                />
+              </div>
+            </div>
           </div>
         </section>
+
+        <aside className="space-y-4">
+          <FileUpload onExecutionStarted={setExecutionId} />
+          <ExecutionProgress execution={execution} logs={logs} />
+        </aside>
       </div>
     </main>
+  );
+}
+
+function JarbasCore() {
+  return (
+    <div className="jarbas-float relative mb-3 flex h-[280px] w-[280px] shrink-0 items-center justify-center sm:h-[360px] sm:w-[360px] xl:h-[440px] xl:w-[440px]">
+      <div className="jarbas-ring absolute inset-0 rounded-full border border-jarbas-cyan/15" />
+      <div className="jarbas-ring-slow absolute inset-6 rounded-full border border-jarbas-blue/15" />
+      <div className="absolute inset-12 rounded-full border border-white/10 bg-jarbas-bg/25 backdrop-blur-sm" />
+      <video
+        aria-label="Nucleo visual do Jarbas"
+        autoPlay
+        className="jarbas-core-shadow relative z-10 h-[72%] w-[72%] rounded-full object-cover opacity-95 mix-blend-screen"
+        loop
+        muted
+        playsInline
+      >
+        <source src={JARBAS_CORE_VIDEO} type="video/webm" />
+      </video>
+      <div className="absolute left-2 top-2 h-8 w-8 border-l-2 border-t-2 border-jarbas-cyan/45" />
+      <div className="absolute right-2 top-2 h-8 w-8 border-r-2 border-t-2 border-jarbas-cyan/45" />
+      <div className="absolute bottom-2 left-2 h-8 w-8 border-b-2 border-l-2 border-jarbas-cyan/45" />
+      <div className="absolute bottom-2 right-2 h-8 w-8 border-b-2 border-r-2 border-jarbas-cyan/45" />
+    </div>
   );
 }

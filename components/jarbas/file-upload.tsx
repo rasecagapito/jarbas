@@ -11,11 +11,13 @@ export function FileUpload({
     "Aguardando Excel padrao para Carga PN.",
   );
   const [loading, setLoading] = useState(false);
+  const [fileName, setFileName] = useState<string | null>(null);
 
   async function onFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    setFileName(file.name);
     setLoading(true);
     setStatus(`Enviando ${file.name}...`);
 
@@ -61,16 +63,37 @@ export function FileUpload({
   }
 
   return (
-    <div className="border border-white/10 bg-jarbas-panel p-4">
-      <p className="font-semibold text-jarbas-text">Upload Excel Carga PN</p>
-      <p className="mt-2 text-sm text-jarbas-muted">{status}</p>
-      <input
-        className="mt-4 block w-full text-sm text-jarbas-muted file:mr-4 file:border-0 file:bg-jarbas-cyan file:px-4 file:py-2 file:font-semibold file:text-jarbas-bg"
-        disabled={loading}
-        type="file"
-        accept=".xlsx,.xls"
-        onChange={onFileChange}
-      />
+    <div className="jarbas-glass rounded-lg p-5">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="font-mono text-xs uppercase tracking-[0.16em] text-jarbas-cyan">
+            Intake
+          </p>
+          <p className="mt-2 font-display text-xl font-semibold text-jarbas-text">
+            Upload Excel Carga PN
+          </p>
+        </div>
+        <span className="rounded border border-jarbas-cyan/30 px-2 py-1 font-mono text-xs uppercase tracking-[0.12em] text-jarbas-cyan">
+          XLSX
+        </span>
+      </div>
+
+      <p className="mt-4 min-h-10 text-sm leading-5 text-jarbas-muted">{status}</p>
+      <label className="mt-4 flex min-h-16 cursor-pointer flex-col justify-center gap-2 rounded-lg border border-dashed border-jarbas-cyan/35 bg-jarbas-bg/55 px-4 py-3 text-sm text-jarbas-text transition hover:border-jarbas-cyan sm:flex-row sm:items-center sm:justify-between">
+        <span className="font-semibold">
+          {loading ? "Enviando arquivo" : "Escolher arquivo"}
+        </span>
+        <span className="min-w-0 truncate text-jarbas-muted">
+          {fileName ?? "Excel .xlsx ou .xls"}
+        </span>
+        <input
+          className="sr-only"
+          disabled={loading}
+          type="file"
+          accept=".xlsx,.xls"
+          onChange={onFileChange}
+        />
+      </label>
     </div>
   );
 }
