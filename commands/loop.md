@@ -1,36 +1,65 @@
 # /loop
 
-Quando o usuario invocar `/loop [goal]`:
+Quando o usuario invocar `/loop [objetivo]`:
 
 1. Obter data e hora atuais.
-2. Ler o `GOAL` informado pelo usuario.
-3. Consultar `memory/history/` para entender o ultimo estado do trabalho.
-4. Consultar `memory/learnings/` antes de repetir investigacoes, decisoes ou erros ja tratados.
-5. Consultar `context/` somente quando a tarefa envolver produto, arquitetura, stack, documentacao ou regras do projeto.
-6. Montar uma lista curta de tasks necessarias para atingir o GOAL.
-7. Priorizar as tasks por impacto, dependencia, risco e urgencia.
-8. Verificar creditos diarios antes de executar qualquer task.
-9. Executar somente uma task por ciclo.
-10. Apos cada task, gerar obrigatoriamente um `/status` operacional.
-11. No `/status`, registrar o que foi feito, o que falta, o saldo de creditos e a margem segura restante.
-12. Continuar somente se os creditos restantes forem maiores que 10%.
-13. Parar imediatamente se os creditos restantes forem iguais ou menores que 10%.
-14. Parar tambem se nao houver saldo de creditos confiavel.
-15. Ao parar, criar um checkpoint final com status, pendencias, riscos e ponto de retomada.
-16. Nao alterar `AGENTS.md` sem aprovacao explicita do usuario.
-17. Nao deletar, mover ou renomear arquivos sem aprovacao explicita do usuario.
-18. Nao imprimir, versionar ou expor valores de `env/` ou arquivos `.env*`.
+2. Ler exatamente o objetivo informado pelo usuario.
+3. Identificar se o objetivo e unico ou composto.
+   - Exemplo objetivo unico: finalizar Task 1.
+   - Exemplo objetivo unico: finalizar a tela de login.
+   - Exemplo objetivo composto: fazer as Tasks 1, 2 e 3.
+4. Transformar o objetivo em uma lista objetiva de entregas esperadas.
+5. Definir o criterio de conclusao de cada entrega.
+6. Consultar `memory/history/` para entender o ultimo estado do trabalho.
+7. Consultar `memory/learnings/` antes de repetir investigacoes, decisoes ou erros ja tratados.
+8. Consultar `context/` somente quando a tarefa envolver produto, arquitetura, stack, documentacao ou regras do projeto.
+9. Executar uma unidade de trabalho por ciclo.
+10. Apos cada ciclo, gerar obrigatoriamente um `/status` operacional.
+11. No `/status`, registrar o que foi feito, o que falta para o objetivo definido e se ainda existe trabalho dentro do escopo.
+12. Continuar somente enquanto ainda existir pendencia dentro do objetivo definido pelo usuario.
+13. Parar imediatamente quando o objetivo definido for concluido.
+14. Parar tambem quando houver bloqueio, erro critico, falta de contexto ou necessidade de aprovacao do usuario.
+15. Ao parar, gerar checkpoint final e retornar ao usuario.
+16. Nao executar atividades fora do objetivo definido.
+17. Nao ampliar o escopo por conta propria.
+18. Nao alterar `AGENTS.md` sem aprovacao explicita do usuario.
+19. Nao deletar, mover ou renomear arquivos sem aprovacao explicita do usuario.
+20. Nao imprimir, versionar ou expor valores de `env/` ou arquivos `.env*`.
 
 ---
 
 ## Objetivo
 
-Permitir que o agente trabalhe em modo de execucao controlada por GOAL, realizando uma task por vez, medindo o progresso e protegendo a reserva minima de 10% dos creditos diarios.
+Permitir que o agente trabalhe em modo de execucao controlada por objetivo, realizando ciclos sucessivos ate concluir exatamente o ponto definido pelo usuario.
 
-O `/loop` deve evitar execucao longa sem controle. Ele sempre trabalha no modelo:
+O `/loop` nao deve mais controlar a parada por saldo de creditos.
+
+O criterio principal de parada passa a ser o objetivo informado pelo usuario.
+
+O `/loop` deve trabalhar no modelo:
 
 ```txt
-1 task -> /status -> verificar creditos -> decidir continuar ou parar
+objetivo definido -> executar 1 ciclo -> gerar /status -> verificar pendencias do objetivo -> continuar ou parar
+```
+
+---
+
+## Exemplos de uso
+
+```txt
+/loop finalizar Task 1
+```
+
+```txt
+/loop finalizar a tela de login
+```
+
+```txt
+/loop fazer as Tasks 1, 2 e 3
+```
+
+```txt
+/loop corrigir o bug de autenticacao e parar quando o login real funcionar
 ```
 
 ---
@@ -40,93 +69,104 @@ O `/loop` deve evitar execucao longa sem controle. Ele sempre trabalha no modelo
 O comando pode ser chamado assim:
 
 ```txt
-/loop [goal]
+/loop [objetivo]
 ```
 
-Exemplo:
+O objetivo deve indicar claramente o ponto de parada esperado.
+
+Quando o objetivo nao estiver claro, o agente deve pausar e pedir esclarecimento antes de executar.
+
+Exemplos de objetivo claro:
 
 ```txt
-/loop finalizar a Task 3 do MVP Jarbas Carga PN: Supabase clients, middleware de auth e login real
+Finalizar Task 1.
+Finalizar a tela de login.
+Fazer as Tasks 1, 2 e 3.
+Implementar o middleware de auth e parar quando estiver validado.
 ```
 
-Quando possivel, o usuario ou orquestrador deve informar:
+Exemplos de objetivo insuficiente:
 
 ```txt
-GOAL:
-CREDITOS_DIARIOS_TOTAL:
-CREDITOS_ATUAIS:
-PERCENTUAL_CREDITOS_RESTANTES:
-CONTEXTO:
-RESTRICOES:
+Continuar o projeto.
+Fazer melhorias.
+Arrumar tudo.
+Prosseguir.
 ```
-
-Se os creditos nao forem informados e nao existir ferramenta confiavel para consulta, o agente deve pausar antes de executar.
 
 ---
 
 ## Variaveis de controle
 
-Usar estas variaveis sempre que disponiveis:
+Usar estas variaveis sempre que aplicavel:
 
 ```txt
-GOAL
+OBJETIVO_USUARIO
 DATA_HORA_ATUAL
-CREDITOS_DIARIOS_TOTAL
-CREDITOS_ATUAIS
-PERCENTUAL_CREDITOS_RESTANTES
-LIMITE_MINIMO_CREDITOS = 10%
-CREDITOS_RESERVA
-CREDITOS_SEGUROS_DISPONIVEIS
-PERCENTUAL_SEGURO_DISPONIVEL
-STATUS_EXECUCAO
+ESCOPO_DEFINIDO
+CRITERIO_DE_CONCLUSAO
+OBJETIVOS_LISTADOS
+OBJETIVOS_CONCLUIDOS
+OBJETIVOS_PENDENTES
+CICLO_ATUAL
 TASK_ATUAL
 PROXIMA_TASK
-TASKS_CONCLUIDAS
-TASKS_PENDENTES
+STATUS_EXECUCAO
 CHECKPOINT_ATUAL
 ```
 
 ---
 
-## Regra absoluta de creditos
+## Regra absoluta de escopo
 
-Antes de qualquer task:
+1. O agente deve executar somente o que estiver dentro do objetivo informado.
+2. O agente nao pode ampliar o escopo por conta propria.
+3. O agente nao pode continuar apos concluir o objetivo definido.
+4. O agente nao pode iniciar uma nova task fora do objetivo.
+5. Se o objetivo for composto, executar apenas os itens listados pelo usuario.
+6. Se surgir uma melhoria fora do escopo, registrar como sugestao ou pendencia futura, mas nao executar.
+7. Se houver duvida sobre o limite do objetivo, pausar e perguntar.
 
-1. Verificar `PERCENTUAL_CREDITOS_RESTANTES`.
-2. Se `PERCENTUAL_CREDITOS_RESTANTES <= 10%`, parar imediatamente.
-3. Nunca consumir os ultimos 10% dos creditos diarios.
-4. Se nao houver saldo confiavel, pausar.
-5. Nunca inventar, estimar ou simular saldo de creditos.
-6. Nunca executar uma task quando houver risco claro de consumir a reserva de 10%.
-
-Mensagem obrigatoria quando faltar saldo:
+Mensagem obrigatoria quando o objetivo estiver amplo ou ambiguo:
 
 ```txt
-Nao tenho acesso confiavel ao saldo atual de creditos. Para evitar consumo indevido, a execucao sera pausada ate que o saldo seja informado ou consultado por uma ferramenta confiavel.
+O objetivo informado esta amplo demais para executar em loop com seguranca. Para prosseguir, defina o ponto exato de parada. Exemplo: finalizar Task 1, finalizar tela de login, ou fazer Tasks 1, 2 e 3.
 ```
 
 ---
 
-## Formula de margem segura
+## Definicao do criterio de conclusao
 
-Quando houver dados suficientes, calcular:
+Antes de iniciar, o agente deve transformar o objetivo em criterios verificaveis.
+
+Exemplo 1:
 
 ```txt
-CREDITOS_RESERVA = CREDITOS_DIARIOS_TOTAL * 0.10
+Objetivo do usuario:
+Finalizar Task 1.
 
-CREDITOS_SEGUROS_DISPONIVEIS = CREDITOS_ATUAIS - CREDITOS_RESERVA
-
-PERCENTUAL_SEGURO_DISPONIVEL = PERCENTUAL_CREDITOS_RESTANTES - 10%
+Criterio de conclusao:
+Task 1 implementada, validada e registrada no /status final.
 ```
 
-Exemplo:
+Exemplo 2:
 
 ```txt
-Creditos totais: 100
-Creditos atuais: 35
-Reserva obrigatoria: 10
-Creditos seguros ainda disponiveis: 25
-Percentual seguro ainda disponivel: 25%
+Objetivo do usuario:
+Finalizar a tela de login.
+
+Criterio de conclusao:
+Tela de login implementada ou ajustada, fluxo basico validado e pendencias registradas.
+```
+
+Exemplo 3:
+
+```txt
+Objetivo do usuario:
+Fazer as Tasks 1, 2 e 3.
+
+Criterio de conclusao:
+Tasks 1, 2 e 3 concluidas ou, se alguma bloquear, registrar motivo do bloqueio e retornar ao usuario.
 ```
 
 ---
@@ -135,50 +175,49 @@ Percentual seguro ainda disponivel: 25%
 
 Executar exatamente este fluxo:
 
-1. Receber `/loop [goal]`.
-2. Confirmar o GOAL.
-3. Consultar memoria e contexto relevantes:
+1. Receber `/loop [objetivo]`.
+2. Obter data e hora atuais.
+3. Interpretar o objetivo do usuario.
+4. Separar objetivo unico ou multiplos objetivos.
+5. Definir o escopo permitido.
+6. Definir criterio de conclusao.
+7. Consultar memoria e contexto relevantes:
    - `memory/history/`
    - `memory/learnings/`
    - `context/`
-4. Identificar o estado atual.
-5. Montar plano curto de tasks.
-6. Escolher a proxima task prioritaria.
-7. Verificar creditos antes da task.
-8. Executar somente a task escolhida.
-9. Validar o resultado.
-10. Gerar `/status` operacional.
-11. Verificar creditos depois da task.
-12. Decidir:
-    - continuar;
-    - pausar;
-    - finalizar;
-    - bloquear por falta de informacao.
-13. Repetir somente se houver creditos seguros acima de 10%.
-14. Ao encerrar, gerar checkpoint final.
+8. Identificar o estado atual.
+9. Montar plano curto apenas com atividades necessarias para concluir o objetivo.
+10. Escolher a proxima unidade de trabalho.
+11. Executar somente essa unidade.
+12. Validar o resultado.
+13. Gerar `/status` operacional.
+14. Verificar se o objetivo definido foi concluido.
+15. Se o objetivo ainda nao foi concluido, continuar para o proximo ciclo.
+16. Se o objetivo foi concluido, parar e retornar ao usuario.
+17. Se houver bloqueio, erro critico, falta de contexto ou acao que exija aprovacao, parar e retornar ao usuario.
+18. Ao encerrar, gerar checkpoint final.
 
 ---
 
 ## Loop de execucao
 
-Enquanto `PERCENTUAL_CREDITOS_RESTANTES > 10%`, executar:
+Enquanto houver pendencia dentro do objetivo definido, executar:
 
 ```txt
 INICIO DO CICLO
 
-1. Verificar creditos restantes.
-2. Confirmar se creditos > 10%.
-3. Selecionar a proxima task prioritaria.
-4. Executar somente uma task.
-5. Validar o resultado.
+1. Confirmar objetivo definido.
+2. Verificar objetivos concluidos e pendentes.
+3. Selecionar a proxima unidade de trabalho dentro do escopo.
+4. Executar somente essa unidade.
+5. Validar resultado.
 6. Gerar /status.
-7. Atualizar tasks concluidas e pendentes.
-8. Verificar creditos novamente.
-9. Decidir:
-   - continuar, se creditos > 10% e houver margem segura;
-   - pausar, se faltarem creditos confiaveis ou contexto;
-   - finalizar, se o GOAL foi concluido;
-   - parar, se creditos <= 10%.
+7. Atualizar objetivos concluidos e pendentes.
+8. Decidir:
+   - continuar, se ainda houver pendencia dentro do objetivo;
+   - finalizar, se o objetivo definido foi concluido;
+   - pausar, se faltar contexto ou houver bloqueio;
+   - retornar ao usuario, se precisar de aprovacao.
 
 FIM DO CICLO
 ```
@@ -187,21 +226,20 @@ FIM DO CICLO
 
 ## Integracao obrigatoria com /status
 
-O `/loop` nunca deve executar duas tasks seguidas sem gerar um `/status`.
+O `/loop` nunca deve executar dois ciclos seguidos sem gerar um `/status`.
 
 O `/status` dentro do loop deve informar:
 
-1. Task executada.
-2. Resultado obtido.
-3. Status da task: concluida, parcial, bloqueada ou com erro.
-4. O que ja foi concluido.
-5. O que ainda falta.
-6. Creditos antes da task.
-7. Creditos depois da task.
-8. Percentual de creditos restantes.
-9. Margem segura ainda disponivel antes do limite de 10%.
-10. Proxima task recomendada.
-11. Decisao: continuar, pausar, finalizar ou bloquear.
+1. Objetivo definido pelo usuario.
+2. Ciclo executado.
+3. Unidade de trabalho executada.
+4. Resultado obtido.
+5. Status: concluido, parcial, bloqueado ou com erro.
+6. O que ja foi concluido.
+7. O que ainda falta para o objetivo definido.
+8. Se existe trabalho fora do escopo identificado.
+9. Proxima unidade de trabalho, se ainda houver.
+10. Decisao: continuar, pausar, finalizar ou retornar ao usuario.
 
 ---
 
@@ -210,33 +248,32 @@ O `/status` dentro do loop deve informar:
 ```md
 # /status - Controle do Loop
 
-## GOAL
-- Objetivo principal:
+## Objetivo Definido
+- Objetivo informado pelo usuario:
+- Escopo permitido:
+- Criterio de conclusao:
 
-## Task Atual
-- Task executada:
+## Ciclo Atual
+- Ciclo:
+- Unidade de trabalho executada:
 - Status:
 - Resultado:
 
-## Progresso
-- O que ja foi concluido:
-- O que ainda falta:
+## Progresso do Objetivo
+- Concluido:
+- Pendente:
+- Bloqueado:
 
-## Creditos
-- Creditos totais:
-- Creditos antes da task:
-- Creditos depois da task:
-- Percentual restante:
-- Reserva obrigatoria: 10%
-- Margem segura disponivel:
+## Fora de Escopo Identificado
+- Itens encontrados fora do objetivo:
+- Acao tomada: registrar, ignorar ou sugerir depois.
 
-## Proxima Task Recomendada
-- Task:
+## Proxima Unidade de Trabalho
+- Proxima acao dentro do objetivo:
 - Motivo:
-- Risco de consumo:
 
 ## Decisao
-- Continuar, pausar, finalizar ou bloquear:
+- Continuar, pausar, finalizar ou retornar ao usuario:
 - Justificativa:
 ```
 
@@ -246,31 +283,31 @@ O `/status` dentro do loop deve informar:
 
 Parar imediatamente quando:
 
-1. `PERCENTUAL_CREDITOS_RESTANTES <= 10%`.
-2. Nao houver informacao confiavel de creditos.
-3. O GOAL for concluido.
-4. Existir bloqueio externo.
-5. Existir erro critico.
-6. A proxima task tiver risco alto de consumir a reserva de 10%.
-7. Faltar contexto essencial.
-8. A acao exigir aprovacao explicita do usuario.
-9. A acao envolver deletar, mover ou renomear arquivos.
-10. A acao envolver segredos, `.env*`, credenciais ou valores sensiveis.
+1. O objetivo definido pelo usuario for concluido.
+2. Todos os objetivos listados pelo usuario forem concluidos.
+3. Uma das tasks solicitadas estiver bloqueada e nao puder avancar sem decisao externa.
+4. Houver erro critico.
+5. Faltar contexto essencial.
+6. A proxima acao exigir aprovacao explicita do usuario.
+7. A acao envolver deletar, mover ou renomear arquivos.
+8. A acao envolver segredos, `.env*`, credenciais ou valores sensiveis.
+9. O proximo trabalho necessario estiver fora do objetivo definido.
+10. O usuario tiver definido uma parada explicita e ela tiver sido atingida.
 
 ---
 
 ## Regras de seguranca
 
-1. Nao inventar saldo de creditos.
-2. Nao inventar progresso.
-3. Nao declarar task como concluida sem validacao.
+1. Nao executar fora do objetivo definido.
+2. Nao ampliar escopo por conta propria.
+3. Nao declarar objetivo como concluido sem validacao.
 4. Nao criar, alterar ou apagar arquivos fora do escopo aprovado.
 5. Nao alterar `AGENTS.md` sem fatos aprovados.
 6. Nao versionar arquivos sensiveis.
 7. Nao imprimir valores de variaveis de ambiente.
-8. Nao continuar execucao sem margem segura.
-9. Nao executar varias tasks em um unico ciclo.
-10. Nao ignorar pendencias ou erros.
+8. Nao executar varias unidades de trabalho sem `/status`.
+9. Nao ignorar pendencias ou erros.
+10. Nao continuar depois de atingir o ponto de parada definido pelo usuario.
 
 ---
 
@@ -281,10 +318,14 @@ Durante a execucao:
 1. Usar `memory/history/` para entender o ultimo estado.
 2. Usar `memory/learnings/` para evitar repetir erros.
 3. Registrar no checkpoint final:
+   - objetivo trabalhado;
+   - escopo definido;
+   - criterios de conclusao;
    - decisoes tomadas;
    - arquivos criados ou alterados;
-   - tasks concluidas;
-   - tasks pendentes;
+   - unidades concluidas;
+   - unidades pendentes;
+   - bloqueios;
    - riscos;
    - proxima melhor acao;
    - ponto de retomada.
@@ -304,18 +345,22 @@ Quando o loop parar, gerar:
 - Status:
 - Motivo da parada:
 - Data/hora:
-- Percentual de creditos restantes:
 
-## GOAL Trabalhado
-- Goal principal:
-- Resultado geral alcancado:
+## Objetivo Trabalhado
+- Objetivo informado pelo usuario:
+- Escopo definido:
+- Criterio de conclusao:
 
-## Tasks Concluidas
+## Resultado Geral
+- Resultado alcancado:
+- Objetivo concluido: sim/nao/parcial
+
+## Unidades Concluidas
 1.
 2.
 3.
 
-## Tasks Pendentes
+## Unidades Pendentes
 1.
 2.
 3.
@@ -330,24 +375,35 @@ Quando o loop parar, gerar:
 2.
 3.
 
-## Riscos Identificados
+## Bloqueios ou Riscos
+1.
+2.
+3.
+
+## Fora de Escopo Identificado
 1.
 2.
 3.
 
 ## Proxima Melhor Acao
-Descrever exatamente qual deve ser a proxima task ao retomar.
+Descrever exatamente qual deve ser a proxima acao ao retomar.
 
 ## Ponto de Retomada
 Informar onde o proximo agente ou a proxima sessao deve continuar.
 
-## Observacoes
--
+## Retorno ao Usuario
+Informar de forma direta que o loop parou porque atingiu o objetivo, bloqueou ou precisa de aprovacao.
 ```
 
 ---
 
 ## Modo antidelirio
+
+Se o objetivo estiver amplo demais:
+
+```txt
+O objetivo informado esta amplo demais para executar em loop com seguranca. Para prosseguir, defina o ponto exato de parada. Exemplo: finalizar Task 1, finalizar tela de login, ou fazer Tasks 1, 2 e 3.
+```
 
 Se faltar contexto para continuar:
 
@@ -355,13 +411,7 @@ Se faltar contexto para continuar:
 Requisitos insuficientes para continuar com seguranca. Para prosseguir, preciso da seguinte informacao: [listar exatamente o que falta].
 ```
 
-Se faltar saldo de creditos:
-
-```txt
-Nao tenho acesso confiavel ao saldo atual de creditos. Para evitar consumo indevido, a execucao sera pausada ate que o saldo seja informado ou consultado por uma ferramenta confiavel.
-```
-
-Se uma task depender de aprovacao:
+Se uma acao depender de aprovacao:
 
 ```txt
 Esta acao exige aprovacao explicita antes de continuar: [descrever a acao]. A execucao sera pausada ate a aprovacao do usuario.
@@ -369,8 +419,8 @@ Esta acao exige aprovacao explicita antes de continuar: [descrever a acao]. A ex
 
 Nunca inventar:
 
-- saldo de creditos;
-- percentual restante;
+- objetivo concluido;
+- status de task;
 - arquivos criados;
 - arquivos alterados;
 - commits feitos;
@@ -389,28 +439,23 @@ Ao iniciar `/loop`, responder:
 ```md
 # LOOP INICIADO
 
-## GOAL
-- Objetivo:
+## Objetivo Definido
+- Objetivo informado pelo usuario:
+- Escopo permitido:
+- Criterio de conclusao:
 
 ## Estado Atual
 - Ultima memoria consultada:
 - Learnings relevantes:
 - Contextos carregados:
 
-## Plano Inicial de Tasks
+## Plano Inicial
 1.
 2.
 3.
 
-## Controle de Creditos
-- Creditos totais:
-- Creditos atuais:
-- Percentual restante:
-- Limite minimo: 10%
-- Margem segura:
-
-## Proxima Task
-- Task selecionada:
+## Proxima Unidade de Trabalho
+- Unidade selecionada:
 - Motivo:
 
 ## Decisao Inicial
@@ -422,16 +467,18 @@ Ao iniciar `/loop`, responder:
 
 ## Instrucao final
 
-Ao receber `/loop [goal]`, ativar esta funcao.
+Ao receber `/loop [objetivo]`, ativar esta funcao.
 
-Executar o GOAL em ciclos controlados.
+Executar apenas o objetivo informado pelo usuario.
 
-Sempre executar apenas uma task por ciclo.
+Trabalhar em ciclos controlados.
 
-Depois de cada task, gerar `/status`.
+Sempre executar somente uma unidade de trabalho por ciclo.
 
-Continuar somente enquanto houver creditos seguros acima da reserva minima de 10%.
+Depois de cada ciclo, gerar `/status`.
 
-Parar imediatamente quando os creditos restantes forem iguais ou menores que 10%, quando faltar saldo confiavel ou quando houver bloqueio de seguranca.
+Continuar somente enquanto houver pendencia dentro do objetivo definido.
 
-Ao encerrar, gerar checkpoint final completo.
+Parar imediatamente quando o objetivo definido for concluido, quando houver bloqueio, quando faltar contexto ou quando a proxima acao exigir aprovacao.
+
+Ao parar, gerar checkpoint final completo e retornar ao usuario.

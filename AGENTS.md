@@ -40,7 +40,7 @@ Carregar somente quando relevante:
 | `/wrapup` | Consolidar a sessao em memoria |
 | `/status` | Mostrar estado atual e proximos passos |
 | `/worker [nome]` | Ativar um worker especialista |
-| `/loop [goal]` | Ativar o comando loop de acordo com as instrucoes do arquivo `commands/loop.md`. |
+| `/loop [objetivo]` | Executar em ciclos ate concluir exatamente o objetivo definido pelo usuario, gerar `/status` apos cada ciclo, parar ao atingir o ponto combinado e retornar ao usuario; carregar `commands/loop.md` quando existir |
 
 ## Estado do Projeto
 - **Data da parametrizacao inicial**: 2026-06-25
