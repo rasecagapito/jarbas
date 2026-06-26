@@ -40,6 +40,7 @@ Carregar somente quando relevante:
 | `/wrapup` | Consolidar a sessao em memoria |
 | `/status` | Mostrar estado atual e proximos passos |
 | `/worker [nome]` | Ativar um worker especialista |
+| `/loop [goal]` | Ativar o comando loop de acordo com as instrucoes do arquivo `commands/loop.md`. |
 
 ## Estado do Projeto
 - **Data da parametrizacao inicial**: 2026-06-25
