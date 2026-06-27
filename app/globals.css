@@ -558,3 +558,275 @@ body {
     width: 680px;
   }
 }
+
+/* Login v2: closer to login_v1.html with canvas neural background and gated auth card */
+.jarbas-login-shell {
+  min-height: 100vh;
+  background: #020617;
+}
+
+.jarbas-neural-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: #020617;
+}
+
+.jarbas-neural-bg::before {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  content: "";
+  background:
+    radial-gradient(circle at 14% 30%, rgba(0, 219, 233, 0.06), transparent 28%),
+    radial-gradient(circle at 88% 64%, rgba(109, 59, 215, 0.08), transparent 30%),
+    linear-gradient(90deg, rgba(2, 6, 23, 0.04), rgba(2, 6, 23, 0.18));
+}
+
+.jarbas-neural-bg::after {
+  display: none;
+}
+
+.jarbas-neural-static {
+  position: absolute;
+  inset: -7vh -6vw;
+  z-index: 1;
+  width: 112vw;
+  height: 114vh;
+  opacity: 1;
+  pointer-events: none;
+}
+
+.jarbas-static-fiber {
+  vector-effect: non-scaling-stroke;
+}
+
+.jarbas-static-fiber-cyan {
+  stroke: #00dbe9;
+}
+
+.jarbas-static-fiber-purple {
+  stroke: #6d3bd7;
+}
+
+.jarbas-neural-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  opacity: 0.58;
+  mix-blend-mode: screen;
+}
+
+.jarbas-bg-blob {
+  position: absolute;
+  z-index: 0;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.jarbas-bg-blob-left {
+  left: -18rem;
+  top: 10rem;
+  width: 52rem;
+  height: 52rem;
+  background: rgba(0, 219, 233, 0.08);
+  filter: blur(150px);
+}
+
+.jarbas-bg-blob-right {
+  right: -16rem;
+  bottom: 7rem;
+  width: 42rem;
+  height: 42rem;
+  background: rgba(109, 59, 215, 0.1);
+  filter: blur(130px);
+}
+
+.jarbas-login-reveal {
+  display: flex;
+  justify-content: center;
+  animation: jarbas-login-enter 260ms ease-out both;
+}
+
+.jarbas-glass-active {
+  border-radius: 24px;
+  background: rgba(7, 13, 31, 0.84);
+  border-top: 1px solid rgba(0, 240, 255, 0.5);
+  border-right: 1px solid rgba(0, 240, 255, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-left: 1px solid rgba(0, 240, 255, 0.22);
+  box-shadow:
+    0 22px 70px rgba(0, 0, 0, 0.36),
+    0 20px 50px -12px rgba(0, 219, 233, 0.15);
+  backdrop-filter: blur(40px);
+}
+
+.jarbas-login-card {
+  width: min(420px, calc(100vw - 32px));
+  max-width: 420px;
+}
+
+.jarbas-field {
+  border: 1px solid rgba(220, 225, 251, 0.82);
+  border-radius: 12px;
+  background: rgba(7, 13, 31, 0.25);
+  padding: 1rem 1.2rem;
+  font-size: 16px;
+}
+
+.jarbas-field:focus {
+  border-color: #00dbe9;
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 219, 233, 0.2),
+    0 0 28px rgba(0, 219, 233, 0.22);
+}
+
+.jarbas-field-icon {
+  color: #dce1fb;
+  font-size: 22px;
+}
+
+.jarbas-dark-pill,
+.jarbas-dark-button,
+.jarbas-auth-button {
+  border: 1px solid rgba(0, 219, 233, 0.16);
+  border-radius: 18px;
+  background: rgba(7, 13, 31, 0.96);
+  color: #dce1fb;
+  box-shadow:
+    0 0 28px rgba(0, 219, 233, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.jarbas-dark-pill {
+  border-radius: 999px;
+}
+
+.jarbas-dark-button,
+.jarbas-outline-button,
+.jarbas-auth-button {
+  font-family: var(--font-display, Sora), system-ui, sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.jarbas-dark-button:hover,
+.jarbas-auth-button:hover {
+  border-color: rgba(0, 219, 233, 0.45);
+  box-shadow:
+    0 0 42px rgba(0, 219, 233, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.jarbas-outline-button {
+  border: 1px solid rgba(220, 225, 251, 0.9);
+  border-radius: 14px;
+  background: rgba(7, 13, 31, 0.24);
+  color: #dce1fb;
+  font-family: var(--font-display, Sora), system-ui, sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.jarbas-outline-button:hover {
+  border-color: rgba(0, 219, 233, 0.85);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 28px rgba(0, 219, 233, 0.14);
+}
+
+.jarbas-auth-button {
+  border-radius: 12px;
+}
+
+.jarbas-ghost-button {
+  border: 1px solid rgba(220, 225, 251, 0.82);
+  border-radius: 12px;
+  background: rgba(7, 13, 31, 0.24);
+  padding: 0.92rem 0.75rem;
+  font-family: var(--font-display, Sora), system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.jarbas-ghost-button:hover {
+  border-color: rgba(0, 219, 233, 0.85);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+@keyframes jarbas-login-enter {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (min-width: 1024px) {
+  .jarbas-login-layout {
+    padding-top: 7rem;
+  }
+
+  .jarbas-login-reveal {
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 1023px) {
+  .jarbas-login-shell {
+    overflow-y: auto;
+  }
+
+  .jarbas-login-layout {
+    align-items: start;
+    min-height: 100svh;
+  }
+
+  .jarbas-login-open .jarbas-login-layout {
+    padding-top: 6.5rem;
+  }
+
+  .jarbas-login-open .jarbas-login-hero {
+    display: none;
+  }
+
+  .jarbas-login-open #jarbas-login-panel {
+    align-items: start;
+    justify-content: center;
+  }
+
+  .jarbas-neural-static {
+    inset: -4vh -42vw;
+    width: 178vw;
+    height: 112vh;
+  }
+
+  .jarbas-login-card {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .jarbas-login-card {
+    padding: 1.5rem !important;
+  }
+
+  .jarbas-field {
+    font-size: 15px;
+  }
+}
