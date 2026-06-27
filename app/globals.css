@@ -32,6 +32,227 @@ body {
   background: #00dbe9;
 }
 
+.jarbas-login-shell {
+  background:
+    radial-gradient(circle at 12% 24%, rgba(0, 219, 233, 0.12), transparent 26%),
+    radial-gradient(circle at 82% 70%, rgba(187, 195, 255, 0.08), transparent 28%),
+    linear-gradient(135deg, #020617 0%, #070d1f 48%, #0c1324 100%);
+}
+
+.jarbas-neural-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(0, 219, 233, 0.04) 1px, transparent 1px),
+    linear-gradient(rgba(0, 219, 233, 0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+.jarbas-neural-bg::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background:
+    linear-gradient(120deg, transparent 0%, rgba(0, 240, 255, 0.08) 42%, transparent 58%),
+    linear-gradient(180deg, rgba(2, 6, 23, 0.18), rgba(2, 6, 23, 0.78));
+}
+
+.jarbas-fiber {
+  position: absolute;
+  width: 920px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(0, 219, 233, 0.74), transparent);
+  filter: drop-shadow(0 0 12px rgba(0, 219, 233, 0.55));
+  opacity: 0.65;
+  transform: rotate(-34deg);
+  animation: jarbas-fiber-drift 13s linear infinite;
+}
+
+.jarbas-fiber-one {
+  left: -16%;
+  top: 24%;
+}
+
+.jarbas-fiber-two {
+  left: 8%;
+  top: 58%;
+  width: 1120px;
+  animation-delay: -4s;
+}
+
+.jarbas-fiber-three {
+  left: 34%;
+  top: 18%;
+  width: 780px;
+  background: linear-gradient(90deg, transparent, rgba(187, 195, 255, 0.56), transparent);
+  animation-delay: -8s;
+}
+
+.jarbas-fiber-four {
+  left: -10%;
+  top: 82%;
+  width: 980px;
+  opacity: 0.42;
+  animation-delay: -10s;
+}
+
+.jarbas-fiber-five {
+  left: 48%;
+  top: 70%;
+  width: 620px;
+  opacity: 0.5;
+  animation-delay: -2s;
+}
+
+.jarbas-fiber-six {
+  left: 18%;
+  top: 38%;
+  width: 520px;
+  background: linear-gradient(90deg, transparent, rgba(109, 59, 215, 0.5), transparent);
+  animation-delay: -6s;
+}
+
+.jarbas-hub-mark {
+  position: relative;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid rgba(0, 219, 233, 0.72);
+  box-shadow: 0 0 24px rgba(0, 219, 233, 0.22);
+}
+
+.jarbas-hub-mark::before,
+.jarbas-hub-mark::after {
+  position: absolute;
+  inset: 7px;
+  content: "";
+  border-top: 1px solid rgba(0, 219, 233, 0.8);
+  border-bottom: 1px solid rgba(0, 219, 233, 0.8);
+}
+
+.jarbas-hub-mark::after {
+  transform: rotate(90deg);
+}
+
+.jarbas-hub-mark span {
+  width: 7px;
+  height: 7px;
+  background: #00dbe9;
+  box-shadow: 0 0 18px rgba(0, 219, 233, 0.8);
+}
+
+.jarbas-text-gradient {
+  background: linear-gradient(90deg, #00f0ff, #d0bcff 72%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.jarbas-cyan-button {
+  border: 1px solid rgba(0, 219, 233, 0.5);
+  background: #00dbe9;
+  color: #00363a;
+  font-family: var(--font-display, Sora), system-ui, sans-serif;
+  font-weight: 800;
+  box-shadow: 0 0 28px rgba(0, 219, 233, 0.28);
+  transition:
+    box-shadow 180ms ease,
+    transform 180ms ease,
+    filter 180ms ease;
+}
+
+.jarbas-cyan-button:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 0 42px rgba(0, 219, 233, 0.42);
+}
+
+.jarbas-cyan-button:active {
+  transform: scale(0.98);
+}
+
+.jarbas-glass-active {
+  background:
+    linear-gradient(rgba(12, 19, 36, 0.72), rgba(12, 19, 36, 0.52)) padding-box,
+    linear-gradient(180deg, rgba(0, 240, 255, 0.62), rgba(255, 255, 255, 0.06)) border-box;
+  border: 1px solid transparent;
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.45),
+    0 0 48px rgba(0, 219, 233, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(34px);
+}
+
+.jarbas-login-card {
+  width: calc(100vw - 32px);
+  max-width: 420px;
+}
+
+.jarbas-field-shell {
+  position: relative;
+  transition:
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.jarbas-field-shell:focus-within {
+  box-shadow: 0 0 25px rgba(0, 219, 233, 0.25);
+}
+
+.jarbas-field {
+  width: 100%;
+  border: 1px solid rgba(59, 73, 75, 0.82);
+  background: rgba(7, 13, 31, 0.42);
+  padding: 1rem;
+  color: #dce1fb;
+  outline: none;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.jarbas-field::placeholder {
+  color: rgba(132, 148, 149, 0.72);
+}
+
+.jarbas-field:focus {
+  border-color: #00dbe9;
+  box-shadow: inset 0 0 0 1px rgba(0, 219, 233, 0.14);
+}
+
+.jarbas-field-icon {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  color: #00dbe9;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.jarbas-ghost-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1px solid rgba(59, 73, 75, 0.7);
+  background: rgba(12, 19, 36, 0.38);
+  padding: 0.8rem 0.75rem;
+  color: #dce1fb;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition:
+    border-color 180ms ease,
+    background 180ms ease;
+}
+
+.jarbas-ghost-button:hover {
+  border-color: rgba(0, 219, 233, 0.45);
+  background: rgba(255, 255, 255, 0.06);
+}
+
 .jarbas-circuit {
   background:
     linear-gradient(90deg, rgba(0, 219, 233, 0.05) 1px, transparent 1px),
@@ -99,6 +320,16 @@ body {
   }
 }
 
+@keyframes jarbas-fiber-drift {
+  from {
+    transform: translate3d(-12%, 18%, 0) rotate(-34deg);
+  }
+
+  to {
+    transform: translate3d(18%, -18%, 0) rotate(-34deg);
+  }
+}
+
 @keyframes jarbas-float {
   0%,
   100% {
@@ -133,5 +364,197 @@ body {
   50% {
     height: 20px;
     opacity: 1;
+  }
+}
+
+/* Login v1 prototype-faithful overrides */
+.jarbas-login-shell {
+  background: #020617;
+}
+
+.jarbas-neural-bg {
+  background:
+    radial-gradient(circle at 18% 26%, rgba(0, 219, 233, 0.1), transparent 34%),
+    radial-gradient(circle at 78% 48%, rgba(109, 59, 215, 0.08), transparent 32%),
+    #020617;
+  background-size: auto;
+}
+
+.jarbas-neural-bg::before {
+  background: linear-gradient(180deg, rgba(2, 6, 23, 0.1), rgba(2, 6, 23, 0.32));
+}
+
+.jarbas-neural-bg::after {
+  position: absolute;
+  inset: -28% -18%;
+  content: "";
+  background:
+    linear-gradient(150deg, transparent 0 6%, rgba(0, 219, 233, 0.88) 6.2% 6.35%, transparent 6.65% 11%),
+    linear-gradient(150deg, transparent 0 12%, rgba(0, 219, 233, 0.78) 12.2% 12.32%, transparent 12.6% 18%),
+    linear-gradient(150deg, transparent 0 19%, rgba(0, 219, 233, 0.68) 19.15% 19.28%, transparent 19.55% 25%),
+    linear-gradient(150deg, transparent 0 27%, rgba(0, 219, 233, 0.84) 27.1% 27.26%, transparent 27.55% 33%),
+    linear-gradient(150deg, transparent 0 36%, rgba(0, 219, 233, 0.72) 36.08% 36.22%, transparent 36.5% 43%),
+    linear-gradient(150deg, transparent 0 47%, rgba(0, 219, 233, 0.9) 47.1% 47.28%, transparent 47.58% 55%),
+    linear-gradient(150deg, transparent 0 59%, rgba(0, 219, 233, 0.7) 59.12% 59.24%, transparent 59.5% 66%),
+    linear-gradient(150deg, transparent 0 72%, rgba(0, 219, 233, 0.84) 72.08% 72.26%, transparent 72.54% 80%),
+    linear-gradient(150deg, transparent 0 86%, rgba(0, 219, 233, 0.62) 86.1% 86.22%, transparent 86.5% 100%),
+    linear-gradient(142deg, transparent 0 17%, rgba(109, 59, 215, 0.72) 17.1% 17.25%, transparent 17.55% 100%),
+    linear-gradient(142deg, transparent 0 64%, rgba(109, 59, 215, 0.72) 64.08% 64.24%, transparent 64.52% 100%);
+  filter: drop-shadow(0 0 9px rgba(0, 219, 233, 0.58));
+  opacity: 0.92;
+}
+
+.jarbas-fiber {
+  display: none;
+}
+
+.jarbas-fiber-1 { left: -8%; top: 18%; width: 720px; }
+.jarbas-fiber-2 { left: -3%; top: 31%; width: 1180px; opacity: 0.86; }
+.jarbas-fiber-3 { left: 0%; top: 44%; width: 760px; opacity: 0.5; }
+.jarbas-fiber-4 { left: 6%; top: 60%; width: 1020px; }
+.jarbas-fiber-5 { left: 10%; top: 78%; width: 1200px; opacity: 0.58; }
+.jarbas-fiber-6 { left: 20%; top: 28%; width: 980px; opacity: 0.38; }
+.jarbas-fiber-7 { left: 24%; top: 50%; width: 1320px; opacity: 0.9; }
+.jarbas-fiber-8 { left: 30%; top: 68%; width: 900px; opacity: 0.42; }
+.jarbas-fiber-9 { left: 38%; top: 16%; width: 760px; opacity: 0.5; }
+.jarbas-fiber-10 { left: 42%; top: 36%; width: 1180px; }
+.jarbas-fiber-11 { left: 48%; top: 58%; width: 1280px; opacity: 0.82; }
+.jarbas-fiber-12 { left: 55%; top: 78%; width: 980px; opacity: 0.52; }
+.jarbas-fiber-13 { left: 64%; top: 22%; width: 740px; opacity: 0.76; }
+.jarbas-fiber-14 { left: 70%; top: 41%; width: 960px; opacity: 0.58; }
+.jarbas-fiber-15 { left: 76%; top: 63%; width: 820px; opacity: 0.88; }
+.jarbas-fiber-16 { left: 82%; top: 12%; width: 660px; opacity: 0.68; }
+.jarbas-fiber-17 { left: 86%; top: 30%; width: 980px; opacity: 0.92; }
+.jarbas-fiber-18 { left: 90%; top: 52%; width: 720px; opacity: 0.62; }
+.jarbas-fiber-19 { left: 12%; top: 12%; width: 920px; opacity: 0.22; background: linear-gradient(90deg, transparent, rgba(109, 59, 215, 0.8), transparent); }
+.jarbas-fiber-20 { left: 18%; top: 86%; width: 1200px; opacity: 0.55; background: linear-gradient(90deg, transparent, rgba(109, 59, 215, 0.8), transparent); }
+.jarbas-fiber-21 { left: 58%; top: 8%; width: 1040px; opacity: 0.36; background: linear-gradient(90deg, transparent, rgba(109, 59, 215, 0.8), transparent); }
+.jarbas-fiber-22 { left: 68%; top: 88%; width: 980px; opacity: 0.5; background: linear-gradient(90deg, transparent, rgba(109, 59, 215, 0.8), transparent); }
+
+.jarbas-orchestrator-mark {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+}
+
+.jarbas-orchestrator-mark,
+.jarbas-orchestrator-mark::before,
+.jarbas-orchestrator-mark::after {
+  background:
+    radial-gradient(circle at 50% 50%, #dce1fb 0 4px, transparent 5px),
+    radial-gradient(circle at 18% 50%, #dce1fb 0 4px, transparent 5px),
+    radial-gradient(circle at 82% 50%, #dce1fb 0 4px, transparent 5px),
+    radial-gradient(circle at 50% 18%, #dce1fb 0 4px, transparent 5px),
+    radial-gradient(circle at 50% 82%, #dce1fb 0 4px, transparent 5px);
+}
+
+.jarbas-orchestrator-mark::before,
+.jarbas-orchestrator-mark::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  transform: rotate(45deg);
+}
+
+.jarbas-orchestrator-mark::after {
+  opacity: 0.35;
+  transform: rotate(45deg) scale(1.3);
+}
+
+.jarbas-dark-pill,
+.jarbas-dark-button,
+.jarbas-auth-button {
+  border: 1px solid rgba(0, 219, 233, 0.18);
+  border-radius: 18px;
+  background: rgba(7, 13, 31, 0.98);
+  color: #dce1fb;
+  box-shadow:
+    0 0 28px rgba(0, 219, 233, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.jarbas-dark-pill {
+  border-radius: 999px;
+}
+
+.jarbas-dark-button,
+.jarbas-outline-button,
+.jarbas-auth-button {
+  font-family: var(--font-display, Sora), system-ui, sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.jarbas-dark-button:hover,
+.jarbas-auth-button:hover {
+  border-color: rgba(0, 219, 233, 0.42);
+  box-shadow: 0 0 40px rgba(0, 219, 233, 0.28);
+}
+
+.jarbas-outline-button {
+  border: 1px solid rgba(220, 225, 251, 0.9);
+  border-radius: 14px;
+  background: rgba(7, 13, 31, 0.22);
+  color: #dce1fb;
+  transition: background 180ms ease, border-color 180ms ease;
+}
+
+.jarbas-outline-button:hover {
+  border-color: rgba(0, 219, 233, 0.9);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.jarbas-glass-active {
+  border-radius: 24px;
+  background: rgba(7, 13, 31, 0.88);
+  border: 1px solid rgba(0, 219, 233, 0.5);
+  box-shadow:
+    0 22px 70px rgba(0, 0, 0, 0.36),
+    0 0 54px rgba(0, 219, 233, 0.12);
+  backdrop-filter: blur(32px);
+}
+
+.jarbas-login-card {
+  width: calc(100vw - 32px);
+  max-width: 482px;
+}
+
+.jarbas-field {
+  border: 1px solid rgba(220, 225, 251, 0.9);
+  border-radius: 12px;
+  background: transparent;
+  padding: 1.05rem 1.2rem;
+  font-size: 18px;
+}
+
+.jarbas-field:focus {
+  border-color: #dce1fb;
+  box-shadow: 0 0 0 1px rgba(220, 225, 251, 0.28);
+}
+
+.jarbas-field-icon {
+  color: #dce1fb;
+  font-size: 24px;
+}
+
+.jarbas-auth-button {
+  border-radius: 12px;
+}
+
+.jarbas-ghost-button {
+  border: 1px solid rgba(220, 225, 251, 0.9);
+  border-radius: 12px;
+  background: transparent;
+  padding: 1rem 0.75rem;
+  font-family: var(--font-display, Sora), system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+@media (max-width: 1023px) {
+  .jarbas-fiber {
+    width: 680px;
   }
 }

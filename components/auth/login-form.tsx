@@ -2,76 +2,133 @@ import { signIn } from "@/app/(auth)/login/actions";
 
 export function LoginForm({ message }: { message: string | null }) {
   return (
-    <form
-      action={signIn}
-      className="jarbas-glass relative mx-auto w-full max-w-md overflow-hidden rounded-lg p-6 sm:p-8"
-    >
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-jarbas-cyan to-transparent" />
-
-      <div className="text-center">
-        <p className="font-mono text-xs uppercase tracking-[0.2em] text-jarbas-cyan">
-          Acesso seguro
-        </p>
-        <h1 className="mt-3 font-display text-3xl font-semibold text-jarbas-blue sm:text-4xl">
-          Jarbas
-        </h1>
-        <p className="mt-3 text-sm leading-6 text-jarbas-muted">
-          Sessao operacional protegida para o cockpit S.A.M.
+    <div className="jarbas-login-card jarbas-glass-active relative overflow-hidden p-9 sm:p-10">
+      <div className="space-y-4 text-center">
+        <h2 className="font-display text-xl font-medium text-jarbas-text">
+          Bem-vindo de volta
+        </h2>
+        <p className="text-lg leading-7 text-jarbas-text/90">
+          Entre para acessar o núcleo do orquestrador
         </p>
       </div>
 
-      {message ? (
-        <p className="mt-6 rounded-lg border border-jarbas-cyan/30 bg-jarbas-panel/80 px-4 py-3 text-sm text-jarbas-text">
-          {message}
-        </p>
-      ) : null}
+      <form action={signIn} className="mt-9 space-y-7">
+        {message ? (
+          <p className="rounded-xl border border-jarbas-cyan/35 bg-jarbas-panel/80 px-4 py-3 text-sm text-jarbas-text shadow-[0_0_24px_rgba(0,219,233,0.12)]">
+            {message}
+          </p>
+        ) : null}
 
-      <label
-        className="mt-6 block font-mono text-xs uppercase tracking-[0.16em] text-jarbas-cyan"
-        htmlFor="email"
-      >
-        E-mail
-      </label>
-      <input
-        id="email"
-        name="email"
-        type="email"
-        autoComplete="email"
-        className="mt-2 w-full rounded-lg border border-white/10 bg-jarbas-bg/70 px-4 py-3 text-jarbas-text outline-none transition focus:border-jarbas-cyan focus:shadow-[0_0_24px_rgba(0,219,233,0.18)]"
-        placeholder="operador@empresa.com"
-        required
-      />
+        <div className="space-y-3">
+          <label
+            className="block font-display text-lg uppercase text-jarbas-text"
+            htmlFor="email"
+          >
+            ID Neural
+          </label>
+          <div className="jarbas-field-shell">
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              className="jarbas-field pr-12"
+              placeholder="vladderkach@mail.com"
+              required
+            />
+            <span className="jarbas-field-icon" aria-hidden="true">
+              @
+            </span>
+          </div>
+        </div>
 
-      <label
-        className="mt-4 block font-mono text-xs uppercase tracking-[0.16em] text-jarbas-cyan"
-        htmlFor="password"
-      >
-        Senha
-      </label>
-      <input
-        id="password"
-        name="password"
-        type="password"
-        autoComplete="current-password"
-        className="mt-2 w-full rounded-lg border border-white/10 bg-jarbas-bg/70 px-4 py-3 text-jarbas-text outline-none transition focus:border-jarbas-cyan focus:shadow-[0_0_24px_rgba(0,219,233,0.18)]"
-        placeholder="************"
-        required
-      />
+        <div className="space-y-3">
+          <div className="flex items-center justify-between gap-4">
+            <label
+              className="block font-display text-lg uppercase text-jarbas-text"
+              htmlFor="password"
+            >
+              Cifra de Acesso
+            </label>
+            <a
+              className="text-lg text-jarbas-text/90 transition hover:text-jarbas-cyan"
+              href="#"
+            >
+              Redefinir Cifra?
+            </a>
+          </div>
+          <div className="jarbas-field-shell">
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autoComplete="current-password"
+              className="jarbas-field pr-12"
+              placeholder="••••••••••••"
+              required
+            />
+            <span className="jarbas-field-icon" aria-hidden="true">
+              ◉
+            </span>
+          </div>
+        </div>
 
-      <button
-        className="mt-6 w-full rounded-lg bg-jarbas-cyan px-5 py-4 font-display text-base font-semibold text-jarbas-bg shadow-[0_0_34px_rgba(0,219,233,0.28)] transition hover:shadow-[0_0_52px_rgba(0,219,233,0.42)] active:scale-[0.99]"
-        type="submit"
-      >
-        Autorizar sessao
-      </button>
+        <div className="flex items-center gap-3">
+          <input
+            className="h-4 w-4 rounded-sm border border-white/70 bg-white text-jarbas-cyan accent-white"
+            id="remember"
+            name="remember"
+            type="checkbox"
+          />
+          <label
+            className="cursor-pointer text-lg text-jarbas-text/90"
+            htmlFor="remember"
+          >
+            Lembrar acesso ao nó
+          </label>
+        </div>
 
-      <div className="mt-6 flex items-center justify-between gap-4 font-mono text-xs uppercase tracking-[0.14em] text-jarbas-muted">
-        <span className="inline-flex items-center gap-2">
-          <span className="h-1.5 w-1.5 rounded-full bg-jarbas-cyan" />
-          Link seguro
-        </span>
-        <span>SAP B1</span>
+        <button
+          className="jarbas-auth-button flex w-full items-center justify-center gap-3 px-5 py-5"
+          type="submit"
+        >
+          Autorizar Sessão
+          <span aria-hidden="true">⚿</span>
+        </button>
+      </form>
+
+      <div className="relative py-11">
+        <div className="absolute inset-0 flex items-center" aria-hidden="true">
+          <div className="w-full border-t border-white/70" />
+        </div>
+        <div className="relative flex justify-center">
+          <span className="bg-jarbas-bg px-5 font-display text-xl uppercase tracking-[0.18em] text-jarbas-text">
+            ou conecte via
+          </span>
+        </div>
       </div>
-    </form>
+
+      <div className="grid grid-cols-2 gap-5">
+        <button className="jarbas-ghost-button" type="button">
+          <span className="font-display text-base font-bold text-jarbas-text">
+            G
+          </span>
+          Google
+        </button>
+        <button className="jarbas-ghost-button" type="button">
+          <span className="text-jarbas-text" aria-hidden="true">
+            ◆
+          </span>
+          X / Core
+        </button>
+      </div>
+
+      <p className="mt-7 text-center text-base text-jarbas-text/90">
+        Precisa de acesso?{" "}
+        <a className="font-bold text-jarbas-text hover:text-jarbas-cyan" href="#">
+          Solicitar convite
+        </a>
+      </p>
+    </div>
   );
 }
