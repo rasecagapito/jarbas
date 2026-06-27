@@ -33,6 +33,7 @@ Carregar somente quando relevante:
 7. Para consolidar mais de dois arquivos de contexto/cerebro, mapear antes e pedir aprovacao.
 8. Implementacoes devem acontecer na branch `dev`; `hom` e para homologacao, `main` e producao.
 9. Tratar `env/` e arquivos `.env*` como segredos locais: nao versionar, nao imprimir valores e nao expor em commits ou logs.
+10. Nao subir ao GitHub nenhum arquivo de `memory/`; memoria, historico e aprendizados sao apenas locais por seguranca.
 
 ## Comandos
 | Comando | Acao |
