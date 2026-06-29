@@ -4,6 +4,10 @@ type SpeechRecognitionWindow = Window &
     webkitSpeechRecognition?: unknown;
   };
 
+export type VoiceProvider = {
+  speak: (text: string) => boolean;
+};
+
 export function getGreeting(displayName: string | null | undefined): string {
   const trimmed = displayName?.trim();
   const context =
@@ -28,13 +32,53 @@ export function isSpeechRecognitionAvailable(): boolean {
 export function isSpeechSynthesisAvailable(): boolean {
   if (typeof window === "undefined") return false;
 
-  return "speechSynthesis" in window;
+  return Boolean(window.speechSynthesis);
 }
 
-export function speak(text: string): void {
-  if (!isSpeechSynthesisAvailable()) return;
+type JarbasVoice = {
+  lang?: string;
+  name?: string;
+};
 
+function selectPortugueseVoice(voices: JarbasVoice[]) {
+  return (
+    voices.find((voice) => voice.lang?.toLowerCase() === "pt-br") ??
+    voices.find((voice) => voice.lang?.toLowerCase().startsWith("pt")) ??
+    null
+  );
+}
+
+export function createSpeechUtterance(
+  text: string,
+  voices: JarbasVoice[] = [],
+): SpeechSynthesisUtterance {
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = "pt-BR";
-  window.speechSynthesis.speak(utterance);
+  utterance.rate = 0.92;
+  utterance.pitch = 0.88;
+
+  const voice = selectPortugueseVoice(voices);
+  if (voice) {
+    utterance.voice = voice as SpeechSynthesisVoice;
+  }
+
+  return utterance;
+}
+
+export const browserVoiceProvider: VoiceProvider = {
+  speak(text: string) {
+    if (!isSpeechSynthesisAvailable()) return false;
+
+    const voices = window.speechSynthesis.getVoices();
+    const utterance = createSpeechUtterance(text, voices);
+
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
+
+    return true;
+  },
+};
+
+export function speak(text: string): boolean {
+  return browserVoiceProvider.speak(text);
 }

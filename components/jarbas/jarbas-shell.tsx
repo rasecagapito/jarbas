@@ -53,6 +53,39 @@ export function JarbasShell({
 
   const visibleMessages = messages.slice(-3);
 
+  async function sendChatMessage(message: string) {
+    setMessages((current) => [...current, message]);
+
+    try {
+      const response = await fetch("/api/jarbas/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message,
+          channel: "text",
+        }),
+      });
+
+      const payload = (await response.json()) as { message?: string };
+      const assistantMessage = response.ok
+        ? payload.message
+        : "Nao consegui processar sua mensagem agora. Tente novamente em instantes.";
+
+      if (!assistantMessage) return;
+
+      setMessages((current) => [...current, assistantMessage]);
+      speak(assistantMessage);
+    } catch {
+      const fallbackMessage =
+        "Nao consegui me comunicar com o cerebro do Jarbas agora. Tente novamente em instantes.";
+
+      setMessages((current) => [...current, fallbackMessage]);
+      speak(fallbackMessage);
+    }
+  }
+
   return (
     <main className="jarbas-circuit relative min-h-screen overflow-x-hidden text-jarbas-text">
       <div className="pointer-events-none absolute inset-0 opacity-80">
@@ -124,9 +157,7 @@ export function JarbasShell({
 
               <div className="flex flex-col gap-3 sm:flex-row">
                 <ChatComposer
-                  onSend={(message) =>
-                    setMessages((current) => [...current, message])
-                  }
+                  onSend={sendChatMessage}
                 />
                 <VoiceControls
                   onTranscript={(message) =>

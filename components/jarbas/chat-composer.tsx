@@ -2,16 +2,20 @@
 
 import { useState } from "react";
 
-export function ChatComposer({ onSend }: { onSend: (message: string) => void }) {
+export function ChatComposer({
+  onSend,
+}: {
+  onSend: (message: string) => void | Promise<void>;
+}) {
   const [value, setValue] = useState("");
 
-  function submit(event: React.FormEvent<HTMLFormElement>) {
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const message = value.trim();
     if (!message) return;
 
-    onSend(message);
     setValue("");
+    await onSend(message);
   }
 
   return (

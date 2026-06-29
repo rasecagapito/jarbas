@@ -11,6 +11,9 @@ describe("AI Router", () => {
     expect(getProviderEnvKey("openai")).toBe("OPENAI_API_KEY");
     expect(getProviderEnvKey("anthropic")).toBe("ANTHROPIC_API_KEY");
     expect(getProviderEnvKey("glm")).toBe("GLM_API_KEY");
+    expect(getProviderEnvKey("gemini")).toBe("GEMINI_API_KEY");
+    expect(getProviderEnvKey("deepseek")).toBe("DEEPSEEK_API_KEY");
+    expect(getProviderEnvKey("llama")).toBe("LLAMA_API_KEY");
     expect(getProviderEnvKey("openai_compatible")).toBe(
       "OPENAI_COMPATIBLE_API_KEY",
     );
