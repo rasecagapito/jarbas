@@ -27,12 +27,12 @@ type ChatCompletionResponse = {
 function getServerSecret(env: AiProviderEnv, secretRef: string) {
   if (secretRef.startsWith("NEXT_PUBLIC_")) return undefined;
 
-  const secret = env[secretRef]?.trim();
+  const secret = env[secretRef]?.trim().replace(/^["']|["']$/g, "");
   return secret ? secret : undefined;
 }
 
 function getEnvValue(name: string) {
-  const value = process.env[name]?.trim();
+  const value = process.env[name]?.trim().replace(/^["']|["']$/g, "");
   return value ? value : undefined;
 }
 

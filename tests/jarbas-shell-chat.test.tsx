@@ -6,6 +6,7 @@ import { JarbasShell } from "@/components/jarbas/jarbas-shell";
 
 const speakMock = vi.fn();
 let speechAvailable = false;
+let voiceEnabled = false;
 let recognitionInstance: {
   onresult: ((event: {
     results: Array<Array<{ transcript: string }>>;
@@ -29,6 +30,7 @@ vi.mock("@/lib/voice", () => ({
   getGreeting: (displayName: string | null | undefined) =>
     displayName ? `Ola, ${displayName}.` : "Ola.",
   isSpeechRecognitionAvailable: () => speechAvailable,
+  isJarbasVoiceEnabled: () => voiceEnabled,
   speak: (message: string) => speakMock(message),
 }));
 
@@ -36,6 +38,7 @@ describe("JarbasShell chat", () => {
   beforeEach(() => {
     speakMock.mockClear();
     speechAvailable = false;
+    voiceEnabled = false;
     recognitionInstance = null;
     vi.stubGlobal(
       "fetch",
@@ -68,7 +71,25 @@ describe("JarbasShell chat", () => {
       }),
     });
     expect(await screen.findByText("Resposta real do Jarbas.")).toBeInTheDocument();
-    expect(speakMock).toHaveBeenCalledWith("Resposta real do Jarbas.");
+    expect(speakMock).not.toHaveBeenCalled();
+  }, 10000);
+
+  it("keeps voice disabled by default for the written conversation stage", async () => {
+    const user = userEvent.setup();
+
+    render(<JarbasShell displayName="Cesar" signOutAction={async () => {}} />);
+
+    expect(screen.queryByRole("button", { name: "Ativar voz" })).not.toBeInTheDocument();
+    expect(speakMock).not.toHaveBeenCalled();
+
+    await user.type(
+      screen.getByLabelText("Instrucao para o Jarbas"),
+      "Pode fazer um resumo?",
+    );
+    await user.click(screen.getByRole("button", { name: "Enviar" }));
+
+    expect(await screen.findByText("Resposta real do Jarbas.")).toBeInTheDocument();
+    expect(speakMock).not.toHaveBeenCalled();
   }, 10000);
 
   it("sends the active group to the backend when a group is selected", async () => {
@@ -198,10 +219,11 @@ describe("JarbasShell chat", () => {
       "Nao consegui me comunicar com o cerebro do Jarbas agora. Tente novamente em instantes.";
 
     expect(await screen.findByText(fallback)).toBeInTheDocument();
-    expect(speakMock).toHaveBeenCalledWith(fallback);
+    expect(speakMock).not.toHaveBeenCalled();
   });
 
   it("sends recognized voice messages to the backend voice channel", async () => {
+    voiceEnabled = true;
     speechAvailable = true;
     const user = userEvent.setup();
 

@@ -40,6 +40,12 @@ type SpeechRecognition = EventTarget & {
 
 type SpeechRecognitionConstructor = new () => SpeechRecognition;
 
+export function isJarbasVoiceEnabled(
+  env: Record<string, string | undefined> = process.env,
+): boolean {
+  return env.NEXT_PUBLIC_JARBAS_VOICE_ENABLED === "true";
+}
+
 export function getGreeting(displayName: string | null | undefined): string {
   const trimmed = displayName?.trim();
   const context =
@@ -166,9 +172,11 @@ async function speakWithRemoteFallback(text: string) {
     const remoteStarted = await speakWithRemoteAudio(text);
     if (remoteStarted) return;
   } catch {
-    // Falls back to browser speech when ElevenLabs is unavailable or limited.
+    // Keep Jarbas silent rather than switching to an unintended browser voice.
+    return;
   }
 
+  // Only use browser speech when remote TTS is intentionally not configured.
   browserVoiceProvider.speak(text);
 }
 

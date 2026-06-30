@@ -16,6 +16,9 @@
     "test": "vitest run",
     "test:watch": "vitest"
   },
+  "overrides": {
+    "postcss": "$postcss"
+  },
   "dependencies": {
     "@ai-sdk/anthropic": "latest",
     "@ai-sdk/openai": "latest",
@@ -36,7 +39,7 @@
     "@tailwindcss/postcss": "latest",
     "@vitejs/plugin-react": "latest",
     "jsdom": "latest",
-    "postcss": "latest",
+    "postcss": "^8.5.10",
     "tailwindcss": "latest",
     "typescript": "latest",
     "vite-tsconfig-paths": "latest",

@@ -15,7 +15,7 @@ import type {
   PortalFlow,
   PortalGroup,
 } from "@/lib/portal/types";
-import { getGreeting, speak } from "@/lib/voice";
+import { getGreeting, isJarbasVoiceEnabled, speak } from "@/lib/voice";
 
 const JARBAS_CORE_VIDEO =
   "https://res.cloudinary.com/dswwqkues/video/upload/v1782399147/jarbas_sem_fundo_transparente_anmayy.webm";
@@ -43,6 +43,7 @@ export function JarbasShell({
     initialGroups[0]?.id ?? null,
   );
   const hasGreetedRef = useRef(false);
+  const voiceEnabled = isJarbasVoiceEnabled();
 
   useEffect(() => {
     if (hasGreetedRef.current) return;
@@ -50,8 +51,10 @@ export function JarbasShell({
 
     const greeting = getGreeting(displayName);
     setMessages([greeting]);
-    speak(greeting);
-  }, [displayName]);
+    if (voiceEnabled) {
+      speak(greeting);
+    }
+  }, [displayName, voiceEnabled]);
 
   useEffect(() => {
     let cancelled = false;
@@ -155,13 +158,17 @@ export function JarbasShell({
       }
 
       setMessages((current) => [...current, assistantMessage]);
-      speak(assistantMessage);
+      if (voiceEnabled) {
+        speak(assistantMessage);
+      }
     } catch {
       const fallbackMessage =
         "Nao consegui me comunicar com o cerebro do Jarbas agora. Tente novamente em instantes.";
 
       setMessages((current) => [...current, fallbackMessage]);
-      speak(fallbackMessage);
+      if (voiceEnabled) {
+        speak(fallbackMessage);
+      }
     }
   }
 
@@ -243,12 +250,16 @@ export function JarbasShell({
                 <ChatComposer
                   onSend={sendChatMessage}
                 />
-                <VoiceControls
-                  onNotice={(message) =>
-                    setMessages((current) => [...current, message])
-                  }
-                  onTranscript={(message) => void sendChatMessage(message, "voice")}
-                />
+                {voiceEnabled ? (
+                  <VoiceControls
+                    onNotice={(message) =>
+                      setMessages((current) => [...current, message])
+                    }
+                    onTranscript={(message) =>
+                      void sendChatMessage(message, "voice")
+                    }
+                  />
+                ) : null}
               </div>
             </div>
           </div>

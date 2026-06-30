@@ -4,6 +4,7 @@ import {
   createSpeechRecognition,
   createSpeechUtterance,
   getGreeting,
+  isJarbasVoiceEnabled,
   isSpeechRecognitionAvailable,
   isSpeechSynthesisAvailable,
   speak,
@@ -23,6 +24,18 @@ describe("voice feature detection", () => {
   it("returns booleans for browser capabilities", () => {
     expect(typeof isSpeechRecognitionAvailable()).toBe("boolean");
     expect(typeof isSpeechSynthesisAvailable()).toBe("boolean");
+  });
+});
+
+describe("isJarbasVoiceEnabled", () => {
+  it("keeps Jarbas voice disabled unless explicitly enabled", () => {
+    expect(isJarbasVoiceEnabled({})).toBe(false);
+    expect(
+      isJarbasVoiceEnabled({ NEXT_PUBLIC_JARBAS_VOICE_ENABLED: "false" }),
+    ).toBe(false);
+    expect(
+      isJarbasVoiceEnabled({ NEXT_PUBLIC_JARBAS_VOICE_ENABLED: "true" }),
+    ).toBe(true);
   });
 });
 
@@ -110,6 +123,27 @@ describe("browserVoiceProvider", () => {
     await vi.waitFor(() => {
       expect(speakMock).toHaveBeenCalledOnce();
     });
+  });
+
+  it("does not fall back to browser speech when configured remote TTS fails", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => ({
+        status: 502,
+        ok: false,
+      })),
+    );
+    vi.stubGlobal("speechSynthesis", {
+      cancel: cancelMock,
+      getVoices: () => [{ lang: "pt-BR", name: "Google portugues do Brasil" }],
+      speak: speakMock,
+    });
+
+    expect(speak("Resposta que nao deve trocar de voz.")).toBe(true);
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(speakMock).not.toHaveBeenCalled();
   });
 
   it("creates pt-BR speech recognition when the browser supports it", () => {

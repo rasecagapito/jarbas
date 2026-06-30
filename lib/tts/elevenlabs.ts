@@ -23,7 +23,7 @@ function getEnvValue(
   env: Record<string, string | undefined>,
   name: string,
 ): string | undefined {
-  const value = env[name]?.trim();
+  const value = env[name]?.trim().replace(/^["']|["']$/g, "");
   return value ? value : undefined;
 }
 
