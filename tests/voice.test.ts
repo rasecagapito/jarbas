@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   browserVoiceProvider,
+  createSpeechRecognition,
   createSpeechUtterance,
   getGreeting,
   isSpeechRecognitionAvailable,
@@ -10,11 +11,11 @@ import {
 
 describe("getGreeting", () => {
   it("uses display name when available", () => {
-    expect(getGreeting("Cesar")).toContain("Ola, Cesar.");
+    expect(getGreeting("Cesar")).toContain("Olá, Cesar.");
   });
 
   it("does not invent a name when display name is missing", () => {
-    expect(getGreeting(null)).toContain("Ola. Eu sou o Jarbas.");
+    expect(getGreeting(null)).toContain("Olá. Eu sou o Jarbas.");
   });
 });
 
@@ -47,16 +48,21 @@ describe("browserVoiceProvider", () => {
     vi.stubGlobal("SpeechSynthesisUtterance", MockSpeechSynthesisUtterance);
   });
 
-  it("creates a pt-BR utterance with stable Jarbas voice settings", () => {
-    const ptVoice = { lang: "pt-BR", name: "Microsoft Maria" };
+  it("creates a pt-BR utterance and prefers more natural browser voices", () => {
+    const ptVoice = { lang: "pt-BR", name: "Microsoft Maria Desktop" };
+    const naturalVoice = { lang: "pt-BR", name: "Google portugues do Brasil" };
     const enVoice = { lang: "en-US", name: "English" };
 
-    const utterance = createSpeechUtterance("Ola", [enVoice, ptVoice]);
+    const utterance = createSpeechUtterance("Ola", [
+      enVoice,
+      ptVoice,
+      naturalVoice,
+    ]);
 
     expect(utterance.lang).toBe("pt-BR");
     expect(utterance.rate).toBe(0.92);
     expect(utterance.pitch).toBe(0.88);
-    expect(utterance.voice).toBe(ptVoice);
+    expect(utterance.voice).toBe(naturalVoice);
   });
 
   it("cancels queued speech before speaking the current Jarbas response", () => {
@@ -82,6 +88,52 @@ describe("browserVoiceProvider", () => {
   it("returns false without blocking when speech synthesis is unavailable", () => {
     vi.stubGlobal("speechSynthesis", undefined);
 
-    expect(speak("Sem voz")).toBe(false);
+    expect(browserVoiceProvider.speak("Sem voz")).toBe(false);
+  });
+
+  it("tries remote TTS first and falls back to browser speech when it is not configured", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => ({
+        status: 204,
+        ok: true,
+      })),
+    );
+    vi.stubGlobal("speechSynthesis", {
+      cancel: cancelMock,
+      getVoices: () => [{ lang: "pt-BR", name: "Google portugues do Brasil" }],
+      speak: speakMock,
+    });
+
+    expect(speak("Resposta com fallback.")).toBe(true);
+
+    await vi.waitFor(() => {
+      expect(speakMock).toHaveBeenCalledOnce();
+    });
+  });
+
+  it("creates pt-BR speech recognition when the browser supports it", () => {
+    class MockSpeechRecognition extends EventTarget {
+      continuous = true;
+      interimResults = true;
+      lang = "";
+      maxAlternatives = 0;
+      onerror = null;
+      onresult = null;
+      onend = null;
+      start = vi.fn();
+      stop = vi.fn();
+    }
+
+    vi.stubGlobal("SpeechRecognition", MockSpeechRecognition);
+
+    const recognition = createSpeechRecognition();
+
+    expect(recognition).toMatchObject({
+      continuous: false,
+      interimResults: false,
+      lang: "pt-BR",
+      maxAlternatives: 1,
+    });
   });
 });

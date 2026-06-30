@@ -2,9 +2,17 @@
   "name": "jarbas-carga-pn-mvp",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "node scripts/load-env.mjs env/.env_hom -- next dev",
+    "dev:local": "next dev",
+    "dev:hom": "node scripts/load-env.mjs env/.env_hom -- next dev",
     "build": "next build",
+    "build:hom": "node scripts/load-env.mjs env/.env_hom -- next build",
+    "build:prod": "node scripts/load-env.mjs env/.env -- next build",
+    "check:hom": "node scripts/check-env.mjs env/.env_hom",
+    "check:prod": "node scripts/check-env.mjs env/.env",
     "lint": "tsc --noEmit",
+    "start:hom": "node scripts/load-env.mjs env/.env_hom -- next start",
+    "start:prod": "node scripts/load-env.mjs env/.env -- next start",
     "test": "vitest run",
     "test:watch": "vitest"
   },

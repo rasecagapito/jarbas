@@ -61,6 +61,14 @@ describe("Jarbas context builder", () => {
       agent_permissions: [
         {
           agents: {
+            id: "agent-portal",
+            name: "Operador Portal de Cargas",
+            slug: "operador-portal-cargas",
+            description: "Opera fluxos do portal externo.",
+          },
+        },
+        {
+          agents: {
             id: "agent-id",
             name: "Carga PN Excel",
             slug: "carga-pn-excel",
@@ -79,6 +87,7 @@ describe("Jarbas context builder", () => {
       jarbas_executions: [
         {
           id: "execution-id",
+          group_id: "group-id",
           status: "processing",
           current_step: "validando Excel",
           progress_percent: 35,
@@ -99,9 +108,15 @@ describe("Jarbas context builder", () => {
     const context = await buildJarbasContext({
       supabase,
       userId: "user-id",
+      activeGroupId: "group-id",
     });
 
     expect(context.profile.displayName).toBe("Cesar");
+    expect(context.activeGroup).toEqual({
+      id: "group-id",
+      name: "Solucoes",
+      slug: "solucoes",
+    });
     expect(context.groups).toEqual([
       {
         id: "group-id",
@@ -111,14 +126,39 @@ describe("Jarbas context builder", () => {
     ]);
     expect(context.permittedAgents).toEqual([
       {
+        id: "agent-portal",
+        name: "Operador Portal de Cargas",
+        slug: "operador-portal-cargas",
+        description: "Opera fluxos do portal externo.",
+      },
+      {
         id: "agent-id",
         name: "Carga PN Excel",
         slug: "carga-pn-excel",
         description: "Executa carga PN via Excel.",
       },
     ]);
+    expect(context.permittedFlows).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: "portal-cargas-status",
+          groupId: "group-id",
+          agentId: "agent-portal",
+        }),
+        expect.objectContaining({
+          id: "carga-pn-excel",
+          groupId: "group-id",
+          agentId: "agent-id",
+        }),
+      ]),
+    );
     expect(context.recentMessages).toHaveLength(1);
-    expect(context.recentExecutions).toHaveLength(1);
+    expect(context.recentExecutions).toEqual([
+      expect.objectContaining({
+        id: "execution-id",
+        groupId: "group-id",
+      }),
+    ]);
     expect(context.memories).toEqual([
       {
         id: "memory-id",
@@ -139,14 +179,60 @@ describe("Jarbas context builder", () => {
       args: ["user_id", "user-id"],
     });
     expect(calls).toContainEqual({
+      table: "conversation_history",
+      method: "eq",
+      args: ["group_id", "group-id"],
+    });
+    expect(calls).toContainEqual({
       table: "jarbas_executions",
       method: "eq",
       args: ["user_id", "user-id"],
     });
     expect(calls).toContainEqual({
+      table: "jarbas_executions",
+      method: "eq",
+      args: ["group_id", "group-id"],
+    });
+    expect(calls).toContainEqual({
       table: "agent_permissions",
       method: "eq",
       args: ["group_id", "group-id"],
+    });
+  });
+
+  it("falls back to the first allowed group when the requested active group is not accessible", async () => {
+    const { calls, supabase } = createQueryMock({
+      profiles: null,
+      user_groups: [
+        {
+          groups: {
+            id: "group-solucoes",
+            name: "Solucoes",
+            slug: "solucoes",
+          },
+        },
+      ],
+      agent_permissions: [],
+      conversation_history: [],
+      jarbas_executions: [],
+      jarbas_memories: [],
+    });
+
+    const context = await buildJarbasContext({
+      supabase,
+      userId: "user-id",
+      activeGroupId: "group-fiscal",
+    });
+
+    expect(context.activeGroup).toEqual({
+      id: "group-solucoes",
+      name: "Solucoes",
+      slug: "solucoes",
+    });
+    expect(calls).toContainEqual({
+      table: "agent_permissions",
+      method: "eq",
+      args: ["group_id", "group-solucoes"],
     });
   });
 
@@ -156,6 +242,7 @@ describe("Jarbas context builder", () => {
         displayName: "Cesar",
         email: "cesar@example.com",
       },
+      activeGroup: { id: "group-id", name: "Solucoes", slug: "solucoes" },
       groups: [{ id: "group-id", name: "Solucoes", slug: "solucoes" }],
       permittedAgents: [
         {
@@ -163,6 +250,19 @@ describe("Jarbas context builder", () => {
           name: "Carga PN Excel",
           slug: "carga-pn-excel",
           description: "Executa carga PN via Excel.",
+        },
+      ],
+      permittedFlows: [
+        {
+          id: "carga-pn-excel",
+          groupId: "group-id",
+          agentId: "agent-id",
+          name: "Carga PN Excel",
+          description: "Fluxo legado.",
+          category: "cadastro",
+          requiresInput: true,
+          inputSchema: null,
+          enabled: true,
         },
       ],
       recentMessages: [],
@@ -181,7 +281,9 @@ describe("Jarbas context builder", () => {
     expect(prompt).toContain("Usuario: Cesar");
     expect(prompt).toContain("Grupos ativos: Solucoes");
     expect(prompt).toContain("Agentes permitidos: Carga PN Excel");
+    expect(prompt).toContain("Fluxos permitidos: Carga PN Excel");
     expect(prompt).toContain("Memorias estruturadas: Preferencia: Usuario prefere respostas curtas.");
+    expect(prompt).toContain("Nunca use memoria, execucao, fluxo ou regra de outro grupo");
     expect(prompt).toContain("Nao invente nome, grupo, memoria, historico");
   });
 });

@@ -21,8 +21,9 @@ function listOrNone(values: string[]) {
 
 function createStatus(context: JarbasContext) {
   const user = context.profile.displayName ?? "nao informado";
-  const groups = listOrNone(context.groups.map((group) => group.name));
+  const activeGroup = context.activeGroup?.name ?? "nenhum";
   const agents = listOrNone(context.permittedAgents.map((agent) => agent.name));
+  const flows = listOrNone(context.permittedFlows.map((flow) => flow.name));
   const latestExecution = context.recentExecutions[0];
   const executionStatus = latestExecution
     ? `${latestExecution.status} - ${latestExecution.currentStep} (${latestExecution.progressPercent}%)`
@@ -31,8 +32,9 @@ function createStatus(context: JarbasContext) {
   return [
     "Status operacional do Jarbas",
     `Usuario: ${user}`,
-    `Grupo ativo: ${groups}`,
+    `Grupo ativo: ${activeGroup}`,
     `Agentes permitidos: ${agents}`,
+    `Fluxos permitidos: ${flows}`,
     `Ultima execucao: ${executionStatus}`,
     "Proxima acao sugerida: informe o que deseja executar ou consulte /memoria.",
   ].join("\n");

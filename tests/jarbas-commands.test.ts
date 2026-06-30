@@ -4,6 +4,7 @@ import type { JarbasContext } from "@/lib/jarbas/context";
 
 const context: JarbasContext = {
   profile: { displayName: "Cesar", email: "cesar@example.com" },
+  activeGroup: { id: "group-id", name: "Solucoes", slug: "solucoes" },
   groups: [{ id: "group-id", name: "Solucoes", slug: "solucoes" }],
   permittedAgents: [
     {
@@ -11,6 +12,19 @@ const context: JarbasContext = {
       name: "Carga PN Excel",
       slug: "carga-pn-excel",
       description: "Executa carga PN via Excel.",
+    },
+  ],
+  permittedFlows: [
+    {
+      id: "carga-pn-excel",
+      groupId: "group-id",
+      agentId: "agent-id",
+      name: "Carga PN Excel",
+      description: "Fluxo legado.",
+      category: "cadastro",
+      requiresInput: true,
+      inputSchema: null,
+      enabled: true,
     },
   ],
   recentMessages: [
@@ -24,6 +38,7 @@ const context: JarbasContext = {
   recentExecutions: [
     {
       id: "execution-id",
+      groupId: "group-id",
       status: "processing",
       currentStep: "validando Excel",
       progressPercent: 35,
@@ -48,6 +63,7 @@ describe("Jarbas internal commands", () => {
     expect(result.message).toContain("Usuario: Cesar");
     expect(result.message).toContain("Grupo ativo: Solucoes");
     expect(result.message).toContain("Agentes permitidos: Carga PN Excel");
+    expect(result.message).toContain("Fluxos permitidos: Carga PN Excel");
     expect(result.message).toContain("processing");
   });
 

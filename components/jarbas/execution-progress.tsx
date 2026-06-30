@@ -31,7 +31,7 @@ export function ExecutionProgress({
     <section className="jarbas-glass rounded-lg p-5">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <p className="font-semibold text-jarbas-text">Execucao Carga PN</p>
+          <p className="font-semibold text-jarbas-text">Execucao Portal</p>
           <p className="mt-1 text-sm text-jarbas-muted">{execution.current_step}</p>
         </div>
         <strong className="text-2xl text-jarbas-cyan">

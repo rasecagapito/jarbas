@@ -2,6 +2,8 @@ import {
   listAccessibleJarbasMemories,
   type JarbasMemory,
 } from "@/lib/jarbas/memory";
+import { listPortalFlowsForContext } from "@/lib/portal/gateway";
+import type { PortalFlow } from "@/lib/portal/types";
 
 type SupabaseLike = {
   from: (table: string) => unknown;
@@ -42,6 +44,7 @@ export type JarbasContextMessage = {
 
 export type JarbasContextExecution = {
   id: string;
+  groupId: string;
   status: string;
   currentStep: string;
   progressPercent: number;
@@ -50,8 +53,10 @@ export type JarbasContextExecution = {
 
 export type JarbasContext = {
   profile: JarbasContextProfile;
+  activeGroup: JarbasContextGroup | null;
   groups: JarbasContextGroup[];
   permittedAgents: JarbasContextAgent[];
+  permittedFlows: PortalFlow[];
   recentMessages: JarbasContextMessage[];
   recentExecutions: JarbasContextExecution[];
   memories: JarbasMemory[];
@@ -126,6 +131,7 @@ function normalizeExecutions(data: unknown): JarbasContextExecution[] {
   return data.map((row) => {
     const execution = row as {
       id?: string;
+      group_id?: string;
       status?: string;
       current_step?: string;
       progress_percent?: number;
@@ -134,6 +140,7 @@ function normalizeExecutions(data: unknown): JarbasContextExecution[] {
 
     return {
       id: execution.id ?? "",
+      groupId: execution.group_id ?? "",
       status: execution.status ?? "unknown",
       currentStep: execution.current_step ?? "unknown",
       progressPercent: execution.progress_percent ?? 0,
@@ -145,9 +152,11 @@ function normalizeExecutions(data: unknown): JarbasContextExecution[] {
 export async function buildJarbasContext({
   supabase,
   userId,
+  activeGroupId,
 }: {
   supabase: SupabaseLike;
   userId: string;
+  activeGroupId?: string | null;
 }): Promise<JarbasContext> {
   const profileQuery = asQueryBuilder(supabase.from("profiles"));
   const { data: profileData } = await profileQuery
@@ -164,9 +173,11 @@ export async function buildJarbasContext({
     .eq("user_id", userId)
     .limit!(20);
   const groups = normalizeGroupRows(groupRows);
+  const activeGroup =
+    groups.find((group) => group.id === activeGroupId) ?? groups[0] ?? null;
 
   const permittedAgents: JarbasContextAgent[] = [];
-  for (const group of groups) {
+  for (const group of activeGroup ? [activeGroup] : []) {
     const agentsQuery = asQueryBuilder(supabase.from("agent_permissions"));
     const { data: agentRows } = await agentsQuery
       .select("agents(id,name,slug,description)")
@@ -177,23 +188,40 @@ export async function buildJarbasContext({
     permittedAgents.push(...normalizeAgentRows(agentRows));
   }
 
-  const messagesQuery = asQueryBuilder(supabase.from("conversation_history"));
-  const { data: messageRows } = await messagesQuery
-    .select("role,channel,message,created_at")
-    .eq("user_id", userId)
-    .order!("created_at", { ascending: false })
-    .limit!(8);
+  let messageRows: unknown = [];
+  if (activeGroup) {
+    const messagesQuery = asQueryBuilder(supabase.from("conversation_history"));
+    const { data } = await messagesQuery
+      .select("role,channel,message,created_at")
+      .eq("user_id", userId)
+      .eq("group_id", activeGroup.id)
+      .order!("created_at", { ascending: false })
+      .limit!(8);
 
-  const executionsQuery = asQueryBuilder(supabase.from("jarbas_executions"));
-  const { data: executionRows } = await executionsQuery
-    .select("id,status,current_step,progress_percent,created_at")
-    .eq("user_id", userId)
-    .order!("created_at", { ascending: false })
-    .limit!(5);
+    messageRows = data;
+  }
+
+  let executionRows: unknown = [];
+  if (activeGroup) {
+    const executionsQuery = asQueryBuilder(supabase.from("jarbas_executions"));
+    const { data } = await executionsQuery
+      .select("id,group_id,status,current_step,progress_percent,created_at")
+      .eq("user_id", userId)
+      .eq("group_id", activeGroup.id)
+      .order!("created_at", { ascending: false })
+      .limit!(5);
+
+    executionRows = data;
+  }
+  const recentExecutions = normalizeExecutions(executionRows);
   const memories = await listAccessibleJarbasMemories({
     supabase,
     userId,
-    groupIds: groups.map((group) => group.id),
+    groupIds: activeGroup ? [activeGroup.id] : [],
+  });
+  const permittedFlows = listPortalFlowsForContext({
+    groups,
+    permittedAgents,
   });
 
   return {
@@ -201,19 +229,24 @@ export async function buildJarbasContext({
       displayName: profileRow?.display_name?.trim() || null,
       email: profileRow?.email?.trim() || null,
     },
+    activeGroup,
     groups,
     permittedAgents,
+    permittedFlows,
     recentMessages: normalizeMessages(messageRows),
-    recentExecutions: normalizeExecutions(executionRows),
+    recentExecutions,
     memories,
   };
 }
 
 export function createJarbasSystemPrompt(context: JarbasContext): string {
   const displayName = context.profile.displayName ?? "nao informado";
+  const activeGroup = context.activeGroup?.name ?? "nenhum";
   const groups = context.groups.map((group) => group.name).join(", ") || "nenhum";
   const agents =
     context.permittedAgents.map((agent) => agent.name).join(", ") || "nenhum";
+  const flows =
+    context.permittedFlows.map((flow) => flow.name).join(", ") || "nenhum";
   const messages =
     context.recentMessages
       .map((message) => `${message.role}/${message.channel}: ${message.message}`)
@@ -235,11 +268,14 @@ export function createJarbasSystemPrompt(context: JarbasContext): string {
     "Responda em portugues do Brasil, de forma clara, operacional e segura.",
     `Usuario: ${displayName}`,
     `E-mail: ${context.profile.email ?? "nao informado"}`,
+    `Grupo ativo: ${activeGroup}`,
     `Grupos ativos: ${groups}`,
     `Agentes permitidos: ${agents}`,
+    `Fluxos permitidos: ${flows}`,
     `Historico recente: ${messages}`,
     `Execucoes recentes: ${executions}`,
     `Memorias estruturadas: ${memories}`,
+    "Nunca use memoria, execucao, fluxo ou regra de outro grupo. Se houver mais de um grupo, responda somente dentro do grupo ativo ou peca confirmacao.",
     "Nao invente nome, grupo, memoria, historico, execucao, status, agentes permitidos ou resultados.",
     "Se nao houver informacoes suficientes no contexto atual, diga isso claramente.",
   ].join("\n");

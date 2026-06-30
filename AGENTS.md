@@ -34,6 +34,7 @@ Carregar somente quando relevante:
 8. Implementacoes devem acontecer na branch `dev`; `hom` e para homologacao, `main` e producao.
 9. Tratar `env/` e arquivos `.env*` como segredos locais: nao versionar, nao imprimir valores e nao expor em commits ou logs.
 10. Nao subir ao GitHub nenhum arquivo de `memory/`; memoria, historico e aprendizados sao apenas locais por seguranca.
+11. Nunca promover para PRD/producao/`main` sem aprovacao explicita do usuario apos validacao em `hom`.
 
 ## Comandos
 | Comando | Acao |
@@ -45,8 +46,8 @@ Carregar somente quando relevante:
 
 ## Estado do Projeto
 - **Data da parametrizacao inicial**: 2026-06-25
-- **Ultima sessao registrada**: `memory/history/2026-06-25-20-32-session.md`
+- **Ultima sessao registrada**: `memory/history/2026-06-29-19-44-session-voz-ia-resolvido.md`
 - **Fluxo GitHub**: `dev -> hom -> main`
-- **Status MVP**: Tasks 1 e 2 concluidas em `dev`; Task 3 e a proxima prioridade.
-- **Proximo passo sugerido**: em 2026-06-26, retomar pela Task 3 do plano Jarbas Carga PN MVP: Supabase clients, middleware de auth e login real.
+- **Status MVP**: Jarbas inteligente em HOM com IA (OpenRouter/Gemma com fallback) e voz ElevenLabs (Bill) validados no navegador.
+- **Proximo passo sugerido**: trocar `OPENAI_MODEL` por modelo pago estavel em producao (a lista free e so para HOM); rotacionar chaves do `.env_hom`.
 - **Checklist de implantacao**: `docs/checklists/implantacao-jarbas-mvp.md`

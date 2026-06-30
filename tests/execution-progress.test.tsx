@@ -27,7 +27,7 @@ describe("ExecutionProgress", () => {
       />,
     );
 
-    expect(screen.getByText("Execucao Carga PN")).toBeTruthy();
+    expect(screen.getByText("Execucao Portal")).toBeTruthy();
     expect(screen.getByText("validating_excel")).toBeTruthy();
     expect(screen.getByText("35%")).toBeTruthy();
     expect(screen.getByText("[info] Excel recebido")).toBeTruthy();

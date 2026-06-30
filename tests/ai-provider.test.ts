@@ -1,7 +1,11 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { callAiProvider } from "@/lib/ai/provider";
 
 describe("AIProvider", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
   it("returns a standardized successful response from the configured provider", async () => {
     const result = await callAiProvider(
       {
@@ -97,5 +101,52 @@ describe("AIProvider", () => {
       providerSlug: "openai",
       modelKey: "gpt-jarbas",
     });
+  });
+
+  it("calls the OpenAI-compatible chat completions transport by default", async () => {
+    const fetchMock = vi.fn(async () => ({
+      ok: true,
+      json: async () => ({
+        choices: [
+          {
+            message: {
+              content: "Resposta real do provider.",
+            },
+          },
+        ],
+      }),
+    }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await callAiProvider({
+      messages: [{ role: "user", content: "Ola" }],
+      policy: {
+        primary: {
+          providerSlug: "openai",
+          modelKey: "gpt-test",
+        },
+        temperature: 0.2,
+        maxOutputTokens: 500,
+      },
+      env: {
+        OPENAI_API_KEY: "server-secret",
+      },
+    });
+
+    expect(result).toMatchObject({
+      ok: true,
+      content: "Resposta real do provider.",
+      providerSlug: "openai",
+      modelKey: "gpt-test",
+    });
+    expect(fetchMock).toHaveBeenCalledWith(
+      "https://api.openai.com/v1/chat/completions",
+      expect.objectContaining({
+        method: "POST",
+        headers: expect.objectContaining({
+          Authorization: "Bearer server-secret",
+        }),
+      }),
+    );
   });
 });

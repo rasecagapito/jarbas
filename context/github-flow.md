@@ -14,6 +14,7 @@
 - Se a validacao em `hom` for aprovada, promover para `main`.
 - Se a validacao em `hom` for reprovada, corrigir em `dev` e promover novamente para `hom`.
 - `main` representa producao e so deve receber alteracoes ja validadas.
+- PRD/producao/`main` so pode ser atualizado depois de aprovacao explicita do usuario em `hom`.
 
 ## Fluxo Operacional
 
@@ -30,4 +31,4 @@ dev -> hom -> ajuste em dev -> hom -> main
 ## Regra Para Codex
 
 Antes de implementar, confirmar que a branch local ativa e `dev`. Nao trabalhar diretamente em `hom` ou `main` para desenvolvimento.
-
+Antes de promover para PRD/producao/`main`, confirmar aprovacao explicita do usuario sobre a versao em `hom`.
