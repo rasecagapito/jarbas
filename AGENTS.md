@@ -7,6 +7,14 @@
 - **Fase**: levantamento e parametrizacao inicial
 - **Fonte principal atual**: `1.documentacao/levantamento/textos/1-Documento de levantamento.md`
 
+## Protocolo de Arranque de Sessao (LER PRIMEIRO - qualquer IA)
+Antes de qualquer trabalho, sempre nesta ordem:
+1. Ler `memory/handoff.md` - estado vivo: ultimo provedor, mudanca ativa, narrativa.
+2. Se ha mudanca ativa em `changes/<nome>/`, abrir e ler `tasks.md`; retomar na primeira tarefa `[ ]` (o cursor). Nao recomecar do zero.
+3. Se nao ha mudanca ativa, ler o historico mais recente em `memory/history/`.
+4. Carregar so os modulos de `context/` relevantes a tarefa (poupar tokens).
+Ao fechar cada tarefa e ao encerrar sessao: seguir `automation/procedures/handoff.md` e `wrapup.md`.
+
 ## Objetivo do Projeto
 Construir um cockpit tatico multiagente com interface futurista, avatar/robo holografico em Three.js, entrada por texto e voz, orquestracao no n8n e persistencia/governanca de dados no Supabase.
 
@@ -42,12 +50,16 @@ Carregar somente quando relevante:
 | `/wrapup` | Consolidar a sessao em memoria |
 | `/status` | Mostrar estado atual e proximos passos |
 | `/worker [nome]` | Ativar um worker especialista |
+| `/propose <nome>` | Criar mudanca estruturada em `changes/<nome>/` (proc.: `automation/procedures/propose.md`) |
+| `/handoff` | Ler/gravar estado vivo em `memory/handoff.md` (proc.: `automation/procedures/handoff.md`) |
 | `/loop [objetivo]` | Executar em ciclos ate concluir exatamente o objetivo definido pelo usuario, gerar `/status` apos cada ciclo, parar ao atingir o ponto combinado e retornar ao usuario; carregar `commands/loop.md` quando existir |
+
+> Multi-provedor: este `AGENTS.md` e o cerebro canonico. `CLAUDE.md` e `GEMINI.md` sao ponteiros (`@AGENTS.md`) - nao duplicar conteudo. Como cada IA le o cerebro: `providers/registry.md`. Logica dos comandos (fonte unica, provider-neutra): `automation/procedures/`.
 
 ## Estado do Projeto
 - **Data da parametrizacao inicial**: 2026-06-25
-- **Ultima sessao registrada**: `memory/history/2026-06-29-19-44-session-voz-ia-resolvido.md`
+- **Ultima sessao registrada**: `memory/history/2026-06-30-20-51-session-hom-chat-escrito-voz-pausada.md`
 - **Fluxo GitHub**: `dev -> hom -> main`
-- **Status MVP**: Jarbas inteligente em HOM com IA (OpenRouter/Gemma com fallback) e voz ElevenLabs (Bill) validados no navegador.
-- **Proximo passo sugerido**: trocar `OPENAI_MODEL` por modelo pago estavel em producao (a lista free e so para HOM); rotacionar chaves do `.env_hom`.
+- **Status MVP**: Jarbas inteligente em HOM com conversacao escrita, resumo, portal/SAP e fluxos validados tecnicamente; voz pausada por decisao operacional.
+- **Proximo passo sugerido**: validar HOM por texto (`jarbas-hom.vercel.app`), depois planejar segunda etapa de voz com motor mais estavel; promover `main` somente com aprovacao explicita.
 - **Checklist de implantacao**: `docs/checklists/implantacao-jarbas-mvp.md`
