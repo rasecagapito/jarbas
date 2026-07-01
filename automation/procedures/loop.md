@@ -1,4 +1,6 @@
-# /loop
+# Procedimento: LOOP (execução por objetivo)
+
+> Provider-neutro. No Claude: `/loop [objetivo]`. Noutras IAs: "faz o loop [objetivo]".
 
 Quando o usuario invocar `/loop [objetivo]`:
 

@@ -52,7 +52,7 @@ Carregar somente quando relevante:
 | `/worker [nome]` | Ativar um worker especialista |
 | `/propose <nome>` | Criar mudanca estruturada em `changes/<nome>/` (proc.: `automation/procedures/propose.md`) |
 | `/handoff` | Ler/gravar estado vivo em `memory/handoff.md` (proc.: `automation/procedures/handoff.md`) |
-| `/loop [objetivo]` | Executar em ciclos ate concluir exatamente o objetivo definido pelo usuario, gerar `/status` apos cada ciclo, parar ao atingir o ponto combinado e retornar ao usuario; carregar `commands/loop.md` quando existir |
+| `/loop [objetivo]` | Executar em ciclos ate concluir exatamente o objetivo definido pelo usuario, gerar `/status` apos cada ciclo, parar ao atingir o ponto combinado e retornar ao usuario (proc.: `automation/procedures/loop.md`) |
 
 > Multi-provedor: este `AGENTS.md` e o cerebro canonico. `CLAUDE.md` e `GEMINI.md` sao ponteiros (`@AGENTS.md`) - nao duplicar conteudo. Como cada IA le o cerebro: `providers/registry.md`. Logica dos comandos (fonte unica, provider-neutra): `automation/procedures/`.
 

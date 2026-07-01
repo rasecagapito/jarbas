@@ -1,7 +1,8 @@
 {
   "version": "1.0",
   "project": "Jarbas / S.A.M.",
-  "platform": "Codex",
+  "canonical_brain": "AGENTS.md",
+  "providers": ["Codex", "Claude", "Gemini"],
   "gates": {
     "documentation_consolidation": [
       "brain/context files mapped",
@@ -12,8 +13,10 @@
       "risk explained",
       "explicit human approval received"
     ],
-    "codex_session_start": [
-      "AGENTS.md read",
+    "session_start": [
+      "memory/handoff.md read first",
+      "AGENTS.md read (canonical brain via pointer)",
+      "active change tasks.md resumed at first [ ] when present",
       "latest memory/history checked when resuming",
       "relevant context module loaded"
     ]
