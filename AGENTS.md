@@ -61,5 +61,6 @@ Carregar somente quando relevante:
 - **Ultima sessao registrada**: `memory/history/2026-06-30-20-51-session-hom-chat-escrito-voz-pausada.md`
 - **Fluxo GitHub**: `dev -> hom -> main`
 - **Status MVP**: Jarbas inteligente em HOM com conversacao escrita, resumo, portal/SAP e fluxos validados tecnicamente; voz pausada por decisao operacional.
-- **Proximo passo sugerido**: validar HOM por texto (`jarbas-hom.vercel.app`), depois planejar segunda etapa de voz com motor mais estavel; promover `main` somente com aprovacao explicita.
+- **Motor de IA**: OpenRouter (OpenAI-compativel, slug `openai` em `lib/ai/provider.ts`), cadeia de modelos `:free` com fallback. Sem mudanca de motor pendente (Hermes descartado 2026-07-02, arquivado em `changes/archive/trocar-motor-hermes/`). Gotcha: `:free` da 404/429 aleatorio; estabilizar futuramente com modelo pago/BYOK.
+- **Proximo passo sugerido**: validar HOM por texto (`jarbas-hom.vercel.app`); depois planejar segunda etapa de voz com motor mais estavel; promover `main` somente com aprovacao explicita.
 - **Checklist de implantacao**: `docs/checklists/implantacao-jarbas-mvp.md`
